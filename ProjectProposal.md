@@ -16,13 +16,15 @@ California Road Network Data:
 https://www.cs.utah.edu/~lifeifei/SpatialDataset.htm
 Nodes, each line represents: (NodeID, 0, longitude, latitude) 
 https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cnode
-Edges, each line represents: (EdgeID, startNodeID, endID, direct-distance) https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cedge
+Edges, each line represents: (EdgeID, startNodeID, endID, direct-distance[, 1]), [] is appended by us
+https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cedge
 OpenFlights Plane Data, each line represents: (-AirportID, Name, Longitude, Latitude)
 https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat
-We will create our own new dataset of Flight edges, where we assume each airport connects to each other airport. Each line in this flight edge dataset represents: (-FlightID, startAirport, endAirport, direct-distance)
+We will create our own new dataset of Flight edges, where we assume each airport connects to each other airport. Each line in this flight edge dataset represents: (-FlightID, startAirport, endAirport, direct-distance, 1)
 
-Note that by having a factor of (-1) on our flight ID and airport ID, we can combine our flights and intersection datasets, where a negative value represents flight.
+For our edges we will format it as (ID, startID, endID, direct-distance, transportType[0=road, 1=flight])
 
+Note that by having a factor of (-1) on our flight ID and airport ID, we can combine our flights and intersection datasets, where a negative value represents flight. 
 
 
 ## Data Correction
