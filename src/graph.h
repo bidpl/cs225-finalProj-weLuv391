@@ -1,6 +1,8 @@
 #include <utility>
 #include <vector>
 #include "edge.h"
+# pragma once
+
 
 class Graph {
     public:
