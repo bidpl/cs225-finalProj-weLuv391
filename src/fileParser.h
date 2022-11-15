@@ -13,7 +13,7 @@ class fullGraph{
     /*
     * @brief a constructor for the fileParser
     * This will take in a file with the given data type and create two connected graphs from it
-    * It will also construct a KD-tree of the longitude/latitude points in radians to be used in connectGraphs();
+    * It will also construct a KD-tree of the longitude/latitude points to be used in connectGraphs();
     * 
     * @param transport1 - the file name that holds the data for our nodes that represent our first travel type
     * @param transport2 - the file name that holds the data for our nodes that represent our second travel type
@@ -28,7 +28,7 @@ class fullGraph{
     * 
     * @param nodefile the file name that holds the data for our nodes
     */
-    int insertAllNodes(const std::string& nodefile, bool needMap);
+    int insertAllNodes(const std::string& nodefile);
 
     /*
     * @brief will be used by the constructor, it will take in a file with all the Edges and insert them all in the graph with the proper weidght.

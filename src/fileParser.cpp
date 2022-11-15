@@ -4,21 +4,23 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <math.h>
 
 fullGraph::fullGraph(const std::string& transport1, const std::string& transport2, const std::string& travelEdge1, const std::string& travelEdge2 ){
     
-    transport2_end = insertAllNodes(transport2, true); // inserts the two types of transport nodes and get what indexes they will end/start at
-    transport1_start = transport2_end +1;
-    int dummy = insertAllNodes(transport1, false);
+    transport2_end = insertAllNodes(transport2); // inserts the two types of transport nodes and get what indexes they will end/start at
+    transport1_start = insertAllNodes(transport1);
 
-    dummy = insertAllEdges(travelEdge1); // we know insert our two data sets of edges
-    dummy = insertAllEdges(travelEdge2);
+    transport1_start = insertAllEdges(travelEdge1); // we know insert our two data sets of edges
+    transport1_start = insertAllEdges(travelEdge2);
+
+    transport1_start = transport2_end +1;
 
     connectGraphs(); // we will know take our two connected graphs and make one connected graph out of it
 
 }
 
-int fullGraph::insertAllNodes(const std::string& nodeFile, bool needMap) {
+int fullGraph::insertAllNodes(const std::string& nodeFile) {
 
     string tempWord; // a temp string that holds the data from our files
     int i = 0; // a counter variable that will keep track of how many nodes have been added
@@ -42,10 +44,8 @@ int fullGraph::insertAllNodes(const std::string& nodeFile, bool needMap) {
             Nodes_>>tempWord;
             latitude = std::stod(tempWord);
             std::pair <double,double> coords (longitude, latitude); // then place that node int our coordinate pair
-            
-            if(needMap) { // if we denoted a need for a map, then add the coordiante/ID to the map
-                coorToID[coords] = ID;
-            }
+            coorToID[coords] = ID; // make the coords to an ID in our map
+        
             
             bool result = fullG_.insertNode(ID, coords); // insert the node into the graph and add it to our vector
             allPoints.push_back(coords);
@@ -92,6 +92,23 @@ int fullGraph::insertAllEdges(const std::string& edgefile) {
 }
 
 void fullGraph::connectGraphs() {
+
+    std::vector<Point<2>> coordinateVector; // a vector of points that match to our coordinates but in 
+    for(int i = getTransport2Start(); i<=getTransport2End(); i++) { // loop through the amount of Nodes in our 2nd data type
+        coordinateVector.push_back(Point<2>(allPoints[i].first, allPoints[i].second)); // converts our pair vector to that of Points  to use in the KD tree
+    }
+    KDTree<2> coordsTree (coordinateVector); // creates a KDTree out of the coordinates of our first 
+
+    for(int i = getTransport1Start(); i<=getTransport1End(); i++) {
+        Point<2> closestCoordinate2 = coordsTree.findNearestNeighbor(Point<2>(allPoints[i].first, allPoints[i].second)); //get the closest node from dataset2 to that of dataset 1
+        std::pair <double, double> mapLookup (closestCoordinate2[0],closestCoordinate2[1]); //creates a pair of the coordinates to use in the map lookup
+        int startNode = coorToID[mapLookup]; //get the ID of the corresponding coordinates
+        int destinationNode = coorToID[allPoints[i]];
+        //need to figure out what we call our airport to interescction nodes
+        fullG_.insertEdge(0, startNode, destinationNode, 0, 0); // create an edge between the two Nodes
+    }
+
+
 
 }
 
