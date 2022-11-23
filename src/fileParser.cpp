@@ -104,7 +104,7 @@ void fullGraph::connectGraphs() {
         std::pair <double, double> mapLookup (closestCoordinate2[0],closestCoordinate2[1]); //creates a pair of the coordinates to use in the map lookup
         int startNode = coorToID[mapLookup]; //get the ID of the corresponding coordinates
         int destinationNode = coorToID[allPoints[i]];
-        //need to figure out what we call our airport to interescction nodes
+        //need to figure out what we call our airport to interescction edges
         fullG_.insertEdge(0, startNode, destinationNode, 0, 0); // create an edge between the two Nodes
     }
 
