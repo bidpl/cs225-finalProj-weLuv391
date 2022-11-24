@@ -1,15 +1,15 @@
 #include "graph.h"
 #include <stdexcept>
-
-std::vector<Edge*> Graph::getAdj(int ID) {
+using namespace std;
+vector<Graph::Edge *>& Graph::getAdj(int ID) {
     for (Node n : nodes) {
         if (n.ID == ID) return n.adjList;
     }
-    throw std::runtime_error("node with ID doesn't exist");
-    return std::vector<Edge*>();
+    throw runtime_error("node with ID doesn't exist");
+    return vector<Edge*>();
 }
 
-Edge* Graph::getEdge(int IDa, int IDb) {
+Graph::Edge* Graph::getEdge(int IDa, int IDb) {
     Node* a;
     Node* b;
     std::vector<Edge*> adjListA;
