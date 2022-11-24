@@ -1,12 +1,13 @@
 #include "graph.h"
 #include <stdexcept>
-using namespace std;
-vector<Graph::Edge *>& Graph::getAdj(int ID) {
-    for (Node n : nodes) {
+
+
+std::vector<Graph::Edge*> & Graph::getAdj(int ID) {
+    for (Node & n : nodes) {
         if (n.ID == ID) return n.adjList;
     }
-    throw runtime_error("node with ID doesn't exist");
-    return vector<Edge*>();
+    throw std::runtime_error("node with ID doesn't exist");
+    return nodes[0].adjList; // fudge fix, need better way of doing this, could seg fault 
 }
 
 Graph::Edge* Graph::getEdge(int IDa, int IDb) {
@@ -14,7 +15,7 @@ Graph::Edge* Graph::getEdge(int IDa, int IDb) {
     Node* b;
     std::vector<Edge*> adjListA;
     std::vector<Edge*> adjListB;
-    for (const Node n : nodes) {
+    for (Node & n : nodes) {
         if (n.ID == IDa) {
             a = &n;
             adjListA = n.adjList;
@@ -37,13 +38,13 @@ Graph::Edge* Graph::getEdge(int IDa, int IDb) {
     for (Edge* edge : adjListA) {
         if (edge->end1 == a && edge->end2 == b) {
             foundA = true;
-            resultA = edge;
+            // resultA = edge;  // What's this for?
         }
     }
     for (Edge* edge : adjListB) {
         if (edge->end1 == a && edge->end2 == b) {
             foundB = true;
-            resultB = edge;
+            // resultB = edge;  // What's this for?
         }
     }
     if (found && foundA && foundB) return result;
@@ -53,7 +54,7 @@ Graph::Edge* Graph::getEdge(int IDa, int IDb) {
 }
 
 bool Graph::insertNode(int ID, std::pair<double, double> coords) {
-    for (Node n : nodes) {
+    for (Node & n : nodes) {
         if (n.ID == ID) {
             n.coords = coords;
             return false;
@@ -69,7 +70,7 @@ bool Graph::insertNode(int ID, std::pair<double, double> coords) {
 bool Graph::insertEdge(int routeID, int IDa, int IDb, double distance, int routeType) {
     Node* a = NULL;
     Node* b = NULL;
-    for (const Node n : nodes) {
+    for (Node & n : nodes) {
         if (n.ID == IDa) a = &n;
         else if (n.ID == IDb) b = &n;
     }
@@ -84,14 +85,18 @@ bool Graph::insertEdge(int routeID, Node * node1, Node * node2, double distance,
     newedge.end2 = node2;
     newedge.distance = distance;
     newedge.routeType = routeType;
+
     edgeList.push_back(&newedge);
     node1->adjList.push_back(&newedge);
     node2->adjList.push_back(&newedge);
+
+    // @todo add checking to see if this is overwrite (will have to edit above code)
+    return true; // Change this
 }
 
 //do we need this as a parameter as it's already Graph's private variable?
 double Graph::getTravelTime(Edge * edge, std::vector<double> speedLookup) {
     int type = edge->routeType;
-    if (type < 0 || type >= speedLookup) throw std::runtime_error("route type doesn't exist");
+    if (type < 0 || type >= (int) speedLookup.size()) throw std::runtime_error("route type doesn't exist");
     return speedLookup[type];
 }

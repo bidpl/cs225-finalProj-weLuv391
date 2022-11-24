@@ -15,7 +15,7 @@
 
 //#include "util/coloredout.h"
 
-#include "cs225/point.h"
+#include "point.h"
 
 using std::vector;
 using std::string;

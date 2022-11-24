@@ -4,18 +4,18 @@
 //#include "edge.h"
 # pragma once
 
-
 class Graph {
     public:
         class Node;
         class Edge;
 
         class Edge {
-            int ID;
-            Node * end1;
-            Node * end2;
-            double distance;
-            int routeType;
+            public:
+                int ID;
+                Node * end1;
+                Node * end2;
+                double distance;
+                int routeType;
         };
 
         class Node {
