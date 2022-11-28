@@ -1,6 +1,15 @@
 #include "graph.h"
 #include <stdexcept>
 
+bool Graph::Node::operator!=(const Node & other) {
+    return ID = other.ID;
+}
+
+Graph::Node Graph::Node::operator=(const Node & other) {
+    ID = other.ID;
+    coords = other.coords;
+    adjList = other.adjList;
+}
 
 std::vector<Graph::Edge*> & Graph::getAdj(int ID) {
     for (Node & n : nodes) {
@@ -9,6 +18,18 @@ std::vector<Graph::Edge*> & Graph::getAdj(int ID) {
     throw std::runtime_error("node with ID doesn't exist");
     return nodes[0].adjList; // fudge fix, need better way of doing this, could seg fault 
 }
+
+Graph::Node::Node() : 
+    ID(-1) {}
+
+Graph::Node::Node(int ID_, std::pair<double, double> coords_) :
+    ID(ID_),
+    coords(coords_) {}
+
+Graph::Node::Node(const Node & other) :
+    ID(other.ID),
+    coords(other.coords),
+    adjList(other.adjList) {}
 
 Graph::Edge* Graph::getEdge(int IDa, int IDb) {
     Node* a;
@@ -100,3 +121,46 @@ double Graph::getTravelTime(Edge * edge, std::vector<double> speedLookup) {
     if (type < 0 || type >= speedLookup.size()) throw std::runtime_error("route type doesn't exist");
     return speedLookup[type];
 }
+
+Graph::Iterator::Iterator() {
+    current_ = Node(); // Might need to change this default
+}
+
+Graph::Iterator::Iterator(Node start, unsigned numNodes) :
+    current_(start),
+    visited_(std::vector<bool>(numNodes, false)) {}
+
+Graph::Iterator & Graph::Iterator::operator++() {
+    // @TODO
+    // If at end, don't increment
+    if(current_.ID == -1) {
+        return *this;
+    }
+
+    // Continue this
+    for(Edge * neigh : current_.adjList) {
+        Node neighNode = (neigh->end1->ID == current_.ID) ? neigh->end2 : neigh->end1;
+
+        if(!visited_[neighNode.ID]) {
+            q_.push(neighNode);
+        }
+    }
+
+    if(q_.empty()) {
+        current_ = Node();
+    } else {
+        current_ = q_.front();
+        q_.pop();
+    }
+    
+    return *this;
+}
+
+Graph::Node Graph::Iterator::operator*() {
+    return current_;
+}
+
+bool Graph::Iterator::operator!=(const Iterator &other) {
+    return current_ != other.current_;
+}
+

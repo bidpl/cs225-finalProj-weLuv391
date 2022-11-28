@@ -1,5 +1,6 @@
 #include <utility>
 #include <vector>
+#include <queue>
 # pragma once
 
 class Graph {
@@ -18,9 +19,16 @@ class Graph {
 
         class Node {
             public:
+                Node();
+                Node(int ID_, std::pair<double, double> coords_);
+                Node(const Node & other);
+
                 int ID;
                 std::pair<double, double> coords;
                 std::vector<Edge *> adjList;
+
+                bool operator!=(const Node & other);
+                Node operator=(const Node & other);
         };
 
 
@@ -82,6 +90,21 @@ class Graph {
          * @return double - time it takes to travel that edge
          */
         double getTravelTime(Edge * edge, std::vector<double> speedLookup);
+
+        class Iterator : std::iterator<std::forward_iterator_tag, Node> {
+            public:
+                Iterator();
+                Iterator(Node start, unsigned numNodes);
+
+                Iterator & operator++();
+                Node operator*();
+                bool operator!=(const Iterator &other);
+
+            private:
+                Node current_;
+                std::queue<Node> q_;
+                std::vector<bool> visited_; // Requires continunous IDs that match with index
+        };
 
     private:
         // Edge List
