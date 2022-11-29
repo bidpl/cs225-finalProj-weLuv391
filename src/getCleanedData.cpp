@@ -1,18 +1,22 @@
 #include "getCleanedData.h"
-
+#include "cs225/kdtree.h"
+using namespace std;
 //TOTALS: 406 flights, 29 airports
 //      21692 road segments, 21407 intersections
 
-void getCleanedData(){
-
-  using namespace std;
+Sanitizer::Sanitizer(){
+  nodeCount = 0;
+  edgeCount = 0;
+}
+void Sanitizer::getCleanedData(){
   
   string line;            // used to read/store comma-separated or blankspace-separated strings
   ifstream myfile;        // original data files we openblu
   fstream newfile;        // new txt file we output or append to
   vector<string> lineVec; // used to iterate through individual line of input data file
   vector<string> outVec;     // used to represent a single line in our output text file
-
+  std::pair<double,double> nodePair; //two pairs to measure its long/lat and its start/end index in our vector
+  std::pair<int,int> nodeStartEnd;
   //STEP 1: ROAD INTERSECTION NODES
 
   //open data file from out dataset
@@ -22,6 +26,7 @@ void getCleanedData(){
   // the following nested while loops will convert each line of the .dat file
   // into a vector of elements (strings)
   // we will then push_back the necessary components onto our outVec as a string
+  nodeStartEnd.first = 0; //load the start index
   while(getline(myfile, line)) {
       stringstream ss(line);
       lineVec.clear();
@@ -34,7 +39,17 @@ void getCleanedData(){
     //outVec is a vector of strings, where each string represents:
     // "nodeID, type=0, name=0, longitude, latitude"
     outVec.push_back(lineVec[0]+", 0, 0, "+ lineVec[1] +", "+ lineVec[2]);
+
+
+    nodePair.first = stod(lineVec[1]);
+    nodePair.second = stod(lineVec[2]);
+    allPoints.push_back(nodePair);
+    nodeCount++;
+
   }
+  nodeStartEnd.second = nodeCount-1; //load the end index and push into our vector
+  nodeIndex.push_back(nodeStartEnd);
+  nodeStartEnd.first = nodeCount; //load the start index of our next data type
   myfile.close();
 
   //onto our output file nodes.txt, we want to output each string in outVec on a single line
@@ -120,11 +135,14 @@ void getCleanedData(){
 
               //next airport:
               airportCount++;
-            
+              nodeCount++;
+
             default: break;                     
           }
         }
   }
+  nodeStartEnd.second = nodeCount-1; //load the end index and push into our vector
+  nodeIndex.push_back(nodeStartEnd);
   
   myfile.close();
 
@@ -149,6 +167,7 @@ void getCleanedData(){
           lineVec.push_back(substr);
       }
     outVec.push_back(lineVec[0]+", 0, "+ lineVec[1] +", "+ lineVec[2] + ", " +lineVec[3]);
+    edgeCount++;
   }
   myfile.close();
   
@@ -163,6 +182,7 @@ void getCleanedData(){
 
   //this time we are creating our own airportEdges, assuming there are flights
   //from each commercial airport to every other commericial airport
+  outVec = connectGraphs(edgeCount); // calls our kd fn and maps every airport to have an edge with the nearest road intersection
   int airEdgeCounter = 1;
 
   //now we use the previously saved airports vector from STEP 2
@@ -170,15 +190,17 @@ void getCleanedData(){
     for(unsigned long j=i+1; j<airports.size(); j++){
 
       //note there were 21692 road edges
-        string edgeID = to_string(21692+airEdgeCounter);
+        string edgeID = to_string(edgeCount+airEdgeCounter);
         string startNodeID = airports[i][0];
         string endNodeID = airports[j][0];
         double l2distance = sqrt(pow((stod(airports[i][1])-stod(airports[j][1])),2)+pow((stod(airports[i][2])-stod(airports[j][2])),2));
         
         airEdgeCounter++;
         outVec.push_back(edgeID+", 1, "+startNodeID+", "+endNodeID+", "+to_string(l2distance));
+        edgeCount++;
       }
     }
+    
 
   //append to edges.txt
   newfile.open("Edges_Nodes/edges.txt",ios_base::app);
@@ -188,4 +210,32 @@ void getCleanedData(){
 
   //by the end we should have two files nodes.txt and edges.txt, with airportNodes and
   //flightNodes appended at the end of each file
+}
+
+vector<string> Sanitizer::connectGraphs(int currIdx) {
+    int edgeID = currIdx+1;// our edgeID
+    vector<string> outVec;
+
+    std::vector<Point<2>> coordinateVector; // a vector of points that match to our coordinates but in 
+    for(int i = (nodeIndex[0].first); i<(nodeIndex[0].second); i++) { // loop through the amount of Nodes in our 1st data type
+        coordinateVector.push_back(Point<2>(allPoints[i].first, allPoints[i].second)); // converts our pair vector to that of Points  to use in the KD tree
+    }
+    KDTree<2> coordsTree (coordinateVector); // creates a KDTree out of the coordinates of our first 
+
+    for(std::vector<std::pair<int,int>>::iterator it = nodeIndex.begin()+2; it!= nodeIndex.end(); it++) { //loop through all the start/ends of the different transportation types
+        int start = (*it).first;
+        int end = (*it).second;
+        for(int i = start; i<=end; i++) { //loop through the amount of transportation nodes
+            Point<2> closestCoordinate2 = coordsTree.findNearestNeighbor(Point<2>(allPoints[i].first, allPoints[i].second)); //get the closest node from dataset2 to that of dataset 1
+            std::pair <double, double> mapLookup (closestCoordinate2[0],closestCoordinate2[1]); //creates a pair of the coordinates to use in the map lookup
+            int startNode = coorToID[mapLookup]; //get the ID of the corresponding coordinates
+            int destinationNode = coorToID[allPoints[i]];
+          
+            outVec.push_back(to_string(edgeID)+", 1, "+to_string(startNode)+", "+to_string(destinationNode)+", "+to_string(0)); // adds our 
+            edgeID++;
+            edgeCount++;
+        }
+    }
+
+  return outVec;
 }
