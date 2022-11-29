@@ -19,7 +19,7 @@ class Graph {
                 double distance;
                 int routeType;
 
-                bool operator<=(const Edge & other);
+                bool operator<(const Edge & other);
         };
 
         class Node {
@@ -98,7 +98,7 @@ class Graph {
         class Iterator : std::iterator<std::forward_iterator_tag, Node> {
             public:
                 Iterator();
-                Iterator(Node start, unsigned numNodes, std::vector<Graph::Node> * nodes, std::vector<Graph::Edge> * edgeList);
+                Iterator(Node start, std::vector<Graph::Node> * nodes, std::vector<Graph::Edge> * edgeList);
 
                 Iterator & operator++();
                 Node operator*();
@@ -112,6 +112,11 @@ class Graph {
                 std::vector<Node> * nodes_;
                 std::vector<Edge> * edgeList_;
         };
+
+        // Iterator access
+        Iterator begin();
+        Iterator end();
+        Iterator iterAt(int startIdx);
 
     private:
         // Edge List

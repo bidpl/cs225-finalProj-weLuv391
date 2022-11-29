@@ -16,7 +16,7 @@ Graph::Node::Node(const Node & other) :
     adjList(other.adjList) {}
 
 bool Graph::Node::operator!=(const Node & other) {
-    return ID = other.ID;
+    return ID != other.ID;
 }
 
 Graph::Node & Graph::Node::operator=(const Node & other) {
@@ -41,8 +41,8 @@ Graph::Edge::Edge(int ID_, int end1_, int end2_, double distance_, int routeType
     distance(distance_),
     routeType(routeType_) {}
 
-bool Graph::Edge::operator<=(const Edge & other) {
-    return distance <= other.distance;
+bool Graph::Edge::operator<(const Edge & other) {
+    return distance < other.distance;
 }
 
 std::vector<int> & Graph::getAdj(int ID) {
@@ -116,6 +116,9 @@ bool Graph::insertEdge(int routeID, int IDa, int IDb, double distance, int route
     }
 
     edgeList.push_back(Edge(routeID, IDa, IDb, distance, routeType));
+    nodes[IDa].adjList.push_back(routeID);
+    nodes[IDb].adjList.push_back(routeID);
+
     return true;
 }
 
@@ -141,15 +144,33 @@ double Graph::getTravelTime(int edgeID, const std::vector<double> & speedLookup)
     return speedLookup[routeType];
 }
 
-Graph::Iterator::Iterator() {
-    current_ = Node(); // Might need to change this default
+Graph::Iterator::Iterator() : current_(Node()) {}
+
+Graph::Iterator::Iterator(Graph::Node start, std::vector<Graph::Node> * nodes, std::vector<Graph::Edge> * edgeList) :
+    current_(start),
+    visited_(std::vector<bool>(nodes->size(), false)),
+    nodes_(nodes),
+    edgeList_(edgeList) {
+        if(start.ID >= 0 && start.ID < (int) visited_.size()) {
+            visited_[start.ID] = true;
+        }
+    }
+
+Graph::Iterator Graph::begin() {
+    return iterAt(0);
 }
 
-Graph::Iterator::Iterator(Graph::Node start, unsigned numNodes, std::vector<Graph::Node> * nodes, std::vector<Graph::Edge> * edgeList) :
-    current_(start),
-    visited_(std::vector<bool>(numNodes, false)),
-    nodes_(nodes),
-    edgeList_(edgeList) {}
+Graph::Iterator Graph::end() {
+    return Iterator();
+}
+
+Graph::Iterator Graph::iterAt(int startIdx) {
+    if(startIdx < 0 || startIdx >= (int) nodes.size()) return end();
+
+    Iterator it(nodes[startIdx], &nodes, &edgeList);
+
+    return it;
+}
 
 Graph::Iterator & Graph::Iterator::operator++() {
     // @TODO
@@ -158,13 +179,14 @@ Graph::Iterator & Graph::Iterator::operator++() {
         return *this;
     }
 
-    // Continue this
+    // Add neighbors to queue if not already visited
     for(int edgeID : current_.adjList) {
         Edge & neigh = edgeList_->at(edgeID);
         int neighID = (neigh.end1 == current_.ID) ? neigh.end2 : neigh.end1;
 
         if(!visited_[neighID]) {
             q_.push(nodes_->at(neighID));
+            visited_[neighID] = true;
         }
     }
 
