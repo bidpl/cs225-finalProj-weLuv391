@@ -14,17 +14,16 @@ We will use the California Road Network and Points of Interest as our dataset, a
 
 California Road Network Data: 
 https://www.cs.utah.edu/~lifeifei/SpatialDataset.htm
-Nodes, each line represents: (NodeID, 0, longitude, latitude) 
+Nodes, each line represents: (NodeID, 0, 0, longitude, latitude) 
 https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cnode
-Edges, each line represents: (EdgeID, startNodeID, endID, direct-distance[, 1]), [] is appended by us
+Edges, each line represents: (EdgeID, 0, startNodeID, endID, direct-distance)
 https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cedge
-OpenFlights Plane Data, each line represents: (-AirportID, Name, Longitude, Latitude)
+OpenFlights Plane Data, each line represents: (AirportID, 1, Name, Longitude, Latitude)
 https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat
-We will create our own new dataset of Flight edges, where we assume each airport connects to each other airport. Each line in this flight edge dataset represents: (-FlightID, startAirport, endAirport, direct-distance, 1)
+We will create our own new dataset of Flight edges, where we assume each airport connects to each other airport. Each line in this flight edge dataset represents: (FlightID, 1, startAirport, endAirport, direct-distance)
 
-For our edges we will format it as (ID, startID, endID, direct-distance, transportType[0=road, 1=flight])
-
-Note that by having a factor of (-1) on our flight ID and airport ID, we can combine our flights and intersection datasets, where a negative value represents flight. 
+i.e For our nodes we will format it as (ID, transportType[0=road, 1=flight], name, longitude, latitude)
+For our edges we will format it as (ID, transportType[0=road, 1=flight], startID, endID, direct-distance)
 
 
 ## Data Correction
@@ -108,7 +107,6 @@ Present what we have for these functions and datasets to our advisor for mid-pro
 Mid-Project Dues: Nov 14-18th
 
 Week 4 (Nov 19 - Nov 26) Thanksgiving Break: 
-Correct any errors or suggestions given after our mid-project Check In.
 
 Week 5 (Nov 27 - Dec 4): 
 After Thanksgiving, we will tidy up and finish all algorithms and begin work on the presentation, readme, report, and video.
