@@ -1,134 +1,155 @@
 #include "graph.h"
 #include <stdexcept>
-
-bool Graph::Node::operator!=(const Node & other) {
-    return ID = other.ID;
-}
-
-Graph::Node Graph::Node::operator=(const Node & other) {
-    ID = other.ID;
-    coords = other.coords;
-    adjList = other.adjList;
-}
-
-std::vector<Graph::Edge*> & Graph::getAdj(int ID) {
-    for (Node & n : nodes) {
-        if (n.ID == ID) return n.adjList;
-    }
-    throw std::runtime_error("node with ID doesn't exist");
-    return nodes[0].adjList; // fudge fix, need better way of doing this, could seg fault 
-}
+#include <iostream>
 
 Graph::Node::Node() : 
     ID(-1) {}
 
-Graph::Node::Node(int ID_, std::pair<double, double> coords_) :
+Graph::Node::Node(int ID_, std::pair<double, double> coords_, int type_) :
     ID(ID_),
-    coords(coords_) {}
+    coords(coords_),
+    type(type_) {}
 
 Graph::Node::Node(const Node & other) :
     ID(other.ID),
     coords(other.coords),
     adjList(other.adjList) {}
 
-Graph::Edge* Graph::getEdge(int IDa, int IDb) {
-    Node* a;
-    Node* b;
-    std::vector<Edge*> adjListA;
-    std::vector<Edge*> adjListB;
-    for (Node & n : nodes) {
-        if (n.ID == IDa) {
-            a = &n;
-            adjListA = n.adjList;
-        } else if (n.ID == IDb) {
-            b = &n;
-            adjListB = n.adjList;
+bool Graph::Node::operator!=(const Node & other) {
+    return ID = other.ID;
+}
+
+Graph::Node & Graph::Node::operator=(const Node & other) {
+    ID = other.ID;
+    coords = other.coords;
+    adjList = other.adjList;
+
+    return *this;
+}
+
+Graph::Edge::Edge() : 
+    ID(-1),
+    end1(-1),
+    end2(-1),
+    distance(-1),
+    routeType(-1) {}
+
+Graph::Edge::Edge(int ID_, int end1_, int end2_, double distance_, int routeType_) :
+    ID(ID_),
+    end1(end1_),
+    end2(end2_),
+    distance(distance_),
+    routeType(routeType_) {}
+
+bool Graph::Edge::operator<=(const Edge & other) {
+    return distance <= other.distance;
+}
+
+std::vector<int> & Graph::getAdj(int ID) {
+    // valid ID check
+    if(ID < 0 || ID >= (int) nodes.size()) {
+        throw std::runtime_error("Graph::getAdj: Invalid ID " + std::to_string(ID));
+    }    
+
+    return nodes[ID].adjList;
+}
+
+Graph::Edge Graph::getEdge(int IDa, int IDb) {
+    // Check for valid indexes
+    if(IDa < 0 || IDa >= (int) nodes.size()) {
+        throw std::runtime_error("Graph::getEdge: Invalid IDa: " + std::to_string(IDa));
+    } else if (IDb < 0 || IDb >= (int) nodes.size()) {
+        throw std::runtime_error("Graph::getEdge: Invalid IDb: " + std::to_string(IDb));
+    }
+
+    // Find edge in a's adjList
+    for(const int edgeID : nodes[IDa].adjList) {
+        if(edgeList[edgeID].end1 == IDb || edgeList[edgeID].end2 == IDb) {
+            return edgeList[edgeID];
         }
     }
-    if (a == NULL || b == NULL) throw std::runtime_error("either nodeA or nodeB doesn't exist");
-    bool found = false;
-    Edge* result;
-    bool foundA = false;
-    bool foundB = false;
-    for (Edge* edge : edgeList) {
-         if (edge->end1 == b && edge->end2 == a) {
-            found = true;
-            result = edge;
-        }
-    }
-    for (Edge* edge : adjListA) {
-        if (edge->end1 == a && edge->end2 == b) {
-            foundA = true;
-            // resultA = edge;  // What's this for?
-        }
-    }
-    for (Edge* edge : adjListB) {
-        if (edge->end1 == a && edge->end2 == b) {
-            foundB = true;
-            // resultB = edge;  // What's this for?
-        }
-    }
-    if (found && foundA && foundB) return result;
-    if (found || foundA || foundB) throw std::runtime_error(
-        "edge was found but not present in all lists (edgeList, adjListA, adjListB");
-    return NULL;
+
+    // If not found, return defualt edge
+    return Edge();
 }
 
 bool Graph::insertNode(int ID, std::pair<double, double> coords) {
-    for (Node & n : nodes) {
-        if (n.ID == ID) {
-            n.coords = coords;
-            return false;
-        }
+    return insertNode(ID, coords, -1);
+}
+
+bool Graph::insertNode(int ID, std::pair<double, double> coords, int type) {
+    if(ID < 0) {
+        throw std::runtime_error("Graph::insertNode: invalid ID " + std::to_string(ID));
     }
-    Node newnode;
-    newnode.ID = ID;
-    newnode.coords = coords;
-    nodes.push_back(newnode);
+
+    if(ID < (int) nodes.size()) {
+        std::cout << "Graph::insertNode: tried to overwrite " << ID << std::endl; 
+        return false;
+    }
+
+    if(ID > (int) nodes.size()) {
+        std::cout << "Graph::insertNode: unexpected ID " << ID << " expected " << nodes.size() << std::endl; 
+    }
+
+    nodes.push_back(Node(ID, coords, type));
     return true;
 }
 
 bool Graph::insertEdge(int routeID, int IDa, int IDb, double distance, int routeType) {
-    Node* a = NULL;
-    Node* b = NULL;
-    for (Node & n : nodes) {
-        if (n.ID == IDa) a = &n;
-        else if (n.ID == IDb) b = &n;
+    // Check for valid indexes
+    if(IDa < 0 || IDa >= (int) nodes.size()) {
+        throw std::runtime_error("Graph::insertEdge: Invalid IDa: " + std::to_string(IDa));
+    } else if (IDb < 0 || IDb >= (int) nodes.size()) {
+        throw std::runtime_error("Graph::insertEdge: Invalid IDb: " + std::to_string(IDb));
+    } else if (routeID < 0 || routeID > (int) edgeList.size()) {
+        throw std::runtime_error("Graph::insertEdge: Invalid routeID: " + std::to_string(routeID));
     }
-    if (a == NULL || b == NULL) throw std::runtime_error("either nodeA or nodeB doesn't exist");
-    return insertEdge(routeID, a, b, distance, routeType);
-}
 
-bool Graph::insertEdge(int routeID, Node * node1, Node * node2, double distance, int routeType) {
-    Edge newedge;
-    newedge.ID = routeID;
-    newedge.end1 = node1;
-    newedge.end2 = node2;
-    newedge.distance = distance;
-    newedge.routeType = routeType;
+    // Check if edge already exists, if so return
+    if(routeID < (int) edgeList.size()) {
+        std::cout << "Graph::insertEdge: tried to overwrite" << routeID << " Expected " << edgeList.size() << std::endl;
+        return false;
+    }
 
-    edgeList.push_back(&newedge);
-    node1->adjList.push_back(&newedge);
-    node2->adjList.push_back(&newedge);
+    if(routeID > (int) edgeList.size()) {
+        std::cout << "Graph::insertEdge: unexpected ID " << routeID << " Expected " << edgeList.size() << std::endl;
+    }
 
-    // @todo add checking to see if this is overwrite (will have to edit above code)
-    return true; // Change this
+    edgeList.push_back(Edge(routeID, IDa, IDb, distance, routeType));
+    return true;
 }
 
 //do we need this as a parameter as it's already Graph's private variable?
-double Graph::getTravelTime(Edge * edge, std::vector<double> speedLookup) {
-    int type = edge->routeType;
-    if (type < 0 || type >= speedLookup.size()) throw std::runtime_error("route type doesn't exist");
-    return speedLookup[type];
+double Graph::getTravelTime(int edgeID, const std::vector<double> & speedLookup) {
+    if(edgeID < 0 || edgeID > (int) edgeList.size()) {
+        throw std::runtime_error("Graph::getTravelTime: invalid edgeID " + std::to_string(edgeID));
+    }
+    
+    const double DEFAULT_SPEED = 1.0;
+
+    if(edgeList[edgeID].routeType == -1) {
+        std::cout << "Graph::getTravelTime: got routeType -1" << std::endl;
+        return DEFAULT_SPEED;
+    }
+
+    const int routeType = edgeList[edgeID].routeType;
+
+    if(routeType < -1 || routeType >= (int) speedLookup.size()) {
+        throw std::runtime_error("Graph::getTravelTime:: route type doesn't exist");
+    }
+
+    return speedLookup[routeType];
 }
 
 Graph::Iterator::Iterator() {
     current_ = Node(); // Might need to change this default
 }
 
-Graph::Iterator::Iterator(Node start, unsigned numNodes) :
+Graph::Iterator::Iterator(Graph::Node start, unsigned numNodes, std::vector<Graph::Node> * nodes, std::vector<Graph::Edge> * edgeList) :
     current_(start),
-    visited_(std::vector<bool>(numNodes, false)) {}
+    visited_(std::vector<bool>(numNodes, false)),
+    nodes_(nodes),
+    edgeList_(edgeList) {}
 
 Graph::Iterator & Graph::Iterator::operator++() {
     // @TODO
@@ -138,11 +159,12 @@ Graph::Iterator & Graph::Iterator::operator++() {
     }
 
     // Continue this
-    for(Edge * neigh : current_.adjList) {
-        Node neighNode = (neigh->end1->ID == current_.ID) ? neigh->end2 : neigh->end1;
+    for(int edgeID : current_.adjList) {
+        Edge & neigh = edgeList_->at(edgeID);
+        int neighID = (neigh.end1 == current_.ID) ? neigh.end2 : neigh.end1;
 
-        if(!visited_[neighNode.ID]) {
-            q_.push(neighNode);
+        if(!visited_[neighID]) {
+            q_.push(nodes_->at(neighID));
         }
     }
 
