@@ -12,18 +12,18 @@ For example, if we use the given data sets of all California intersections as th
 
 We will use the California Road Network and Points of Interest as our dataset, as well as the OpenFlights dataset for California airports. The Road Network data will contain Nodes with a NodeID, as well as longitude and latitude data. These nodes represent intersections or endpoints of roads. Also, it will contain Edges with an EdgeID as well as startNode and endNode. This means we will assume roads run straight between two intersections. Moreover, we will use only part of the flight dataset that involves a destination and departure location both within California. To solve the issue of “What is the ideal travel plan between two locations in California,” we will use the road network dataset to calculate the total shortest path through driving, as well as the distances between nearby airports to calculate the alternate route using airplanes. 
 
-California Road Network Data: 
-https://www.cs.utah.edu/~lifeifei/SpatialDataset.htm
-Nodes, each line represents: (NodeID, 0, 0, longitude, latitude) 
-https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cnode
-Edges, each line represents: (EdgeID, 0, startNodeID, endID, direct-distance)
-https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cedge
-OpenFlights Plane Data, each line represents: (AirportID, 1, Name, Longitude, Latitude)
-https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat
-We will create our own new dataset of Flight edges, where we assume each airport connects to each other airport. Each line in this flight edge dataset represents: (FlightID, 1, startAirport, endAirport, direct-distance)
+California Road Network Data: <br>
+https://www.cs.utah.edu/~lifeifei/SpatialDataset.htm <br>
+Nodes, each line represents: (NodeID, 0, 0, longitude, latitude) <br>
+https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cnode <br>
+Edges, each line represents: (EdgeID, 0, startNodeID, endID, direct-distance) <br>
+https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cedge <br>
+OpenFlights Plane Data, each line represents: (AirportID, 1, Name, Longitude, Latitude) <br>
+https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat <br>
+We will create our own new dataset of Flight edges, where we assume each airport connects to each other airport. Each line in this flight edge dataset represents: (FlightID, 1, startAirport, endAirport, direct-distance) <br>
 
-i.e For our nodes we will format it as (ID, transportType[0=road, 1=flight], name, longitude, latitude)
-For our edges we will format it as (ID, transportType[0=road, 1=flight], startID, endID, direct-distance)
+i.e For our nodes we will format it as (ID, transportType[0=road, 1=flight], name, longitude, latitude) <br>
+For our edges we will format it as (ID, transportType[0=road, 1=flight], startID, endID, direct-distance) <br>
 
 
 ## Data Correction
