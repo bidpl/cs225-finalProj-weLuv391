@@ -23,7 +23,7 @@ int main()
   //STEP 1: ROAD INTERSECTION NODES
 
   //open data file from out dataset
-  myfile.open("roadIntersections.dat");
+  myfile.open("../data/roadIntersections.dat");
 
   //in this dataset, each element is separated by a ' '
   // the following nested while loops will convert each line of the .dat file
@@ -54,7 +54,7 @@ int main()
   //STEP 2: AIRPORT NODES
 
   //now let us open our next dataset and clear outVec contents
-  myfile.open("airports.dat"); 
+  myfile.open("../data/airports.dat"); 
   outVec.clear();
 
   //we want to eventually create flight edges between each airport node, so let us 
@@ -138,7 +138,7 @@ int main()
 
   //STEP 3: ROAD SEGMENT EDGES
   //repeat using dataset roadEdgeData.dat
-  myfile.open("roadEdgeData.dat");
+  myfile.open("../data/roadEdgeData.dat");
   outVec.clear();
 
   while(getline(myfile, line)) {
@@ -167,8 +167,8 @@ int main()
   int airEdgeCounter = 1;
 
   //now we use the previously saved airports vector from STEP 2
-  for(int i=0; i<airports.size(); i++){
-    for(int j=i+1; j<airports.size(); j++){
+  for(unsigned long i=0; i<airports.size(); i++){
+    for(unsigned long j=i+1; j<airports.size(); j++){
         
         string edgeID = "-" + to_string(airEdgeCounter);
         string startNodeID = airports[i][0];
