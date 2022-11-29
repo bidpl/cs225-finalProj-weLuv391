@@ -83,12 +83,12 @@ bool Graph::insertNode(int ID, std::pair<double, double> coords, int type) {
     }
 
     if(ID < (int) nodes.size()) {
-        std::cout << "Graph::insertNode: tried to overwrite " << ID << std::endl; 
+        std::cerr << "Graph::insertNode: tried to overwrite " << ID << std::endl; 
         return false;
     }
 
     if(ID > (int) nodes.size()) {
-        std::cout << "Graph::insertNode: unexpected ID " << ID << " expected " << nodes.size() << std::endl; 
+        std::cerr << "Graph::insertNode: unexpected ID " << ID << " expected " << nodes.size() << std::endl; 
     }
 
     nodes.push_back(Node(ID, coords, type));
@@ -107,12 +107,12 @@ bool Graph::insertEdge(int routeID, int IDa, int IDb, double distance, int route
 
     // Check if edge already exists, if so return
     if(routeID < (int) edgeList.size()) {
-        std::cout << "Graph::insertEdge: tried to overwrite" << routeID << " Expected " << edgeList.size() << std::endl;
+        std::cerr << "Graph::insertEdge: tried to overwrite" << routeID << " Expected " << edgeList.size() << std::endl;
         return false;
     }
 
     if(routeID > (int) edgeList.size()) {
-        std::cout << "Graph::insertEdge: unexpected ID " << routeID << " Expected " << edgeList.size() << std::endl;
+        std::cerr << "Graph::insertEdge: unexpected ID " << routeID << " Expected " << edgeList.size() << std::endl;
     }
 
     edgeList.push_back(Edge(routeID, IDa, IDb, distance, routeType));
@@ -124,14 +124,14 @@ bool Graph::insertEdge(int routeID, int IDa, int IDb, double distance, int route
 
 //do we need this as a parameter as it's already Graph's private variable?
 double Graph::getTravelTime(int edgeID, const std::vector<double> & speedLookup) {
-    if(edgeID < 0 || edgeID > (int) edgeList.size()) {
+    if(edgeID < 0 || edgeID >= (int) edgeList.size()) {
         throw std::runtime_error("Graph::getTravelTime: invalid edgeID " + std::to_string(edgeID));
     }
     
     const double DEFAULT_SPEED = 1.0;
 
     if(edgeList[edgeID].routeType == -1) {
-        std::cout << "Graph::getTravelTime: got routeType -1" << std::endl;
+        std::cerr << "Graph::getTravelTime: got routeType -1" << std::endl;
         return DEFAULT_SPEED;
     }
 
