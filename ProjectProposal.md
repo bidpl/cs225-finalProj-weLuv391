@@ -12,19 +12,18 @@ For example, if we use the given data sets of all California intersections as th
 
 We will use the California Road Network and Points of Interest as our dataset, as well as the OpenFlights dataset for California airports. The Road Network data will contain Nodes with a NodeID, as well as longitude and latitude data. These nodes represent intersections or endpoints of roads. Also, it will contain Edges with an EdgeID as well as startNode and endNode. This means we will assume roads run straight between two intersections. Moreover, we will use only part of the flight dataset that involves a destination and departure location both within California. To solve the issue of “What is the ideal travel plan between two locations in California,” we will use the road network dataset to calculate the total shortest path through driving, as well as the distances between nearby airports to calculate the alternate route using airplanes. 
 
-California Road Network Data: 
-https://www.cs.utah.edu/~lifeifei/SpatialDataset.htm
-Nodes, each line represents: (NodeID, 0, longitude, latitude) 
-https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cnode
-Edges, each line represents: (EdgeID, startNodeID, endID, direct-distance[, 1]), [] is appended by us
-https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cedge
-OpenFlights Plane Data, each line represents: (-AirportID, Name, Longitude, Latitude)
-https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat
-We will create our own new dataset of Flight edges, where we assume each airport connects to each other airport. Each line in this flight edge dataset represents: (-FlightID, startAirport, endAirport, direct-distance, 1)
+California Road Network Data: <br>
+https://www.cs.utah.edu/~lifeifei/SpatialDataset.htm <br>
+Nodes, each line represents: (NodeID, 0, 0, longitude, latitude) <br>
+https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cnode <br>
+Edges, each line represents: (EdgeID, 0, startNodeID, endID, direct-distance) <br>
+https://www.cs.utah.edu/~lifeifei/research/tpq/cal.cedge <br>
+OpenFlights Plane Data, each line represents: (AirportID, 1, Name, Longitude, Latitude) <br>
+https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat <br>
+We will create our own new dataset of Flight edges, where we assume each airport connects to each other airport. Each line in this flight edge dataset represents: (FlightID, 1, startAirport, endAirport, direct-distance) <br>
 
-For our edges we will format it as (ID, startID, endID, direct-distance, transportType[0=road, 1=flight])
-
-Note that by having a factor of (-1) on our flight ID and airport ID, we can combine our flights and intersection datasets, where a negative value represents flight. 
+i.e For our nodes we will format it as (ID, transportType[0=road, 1=flight], name, longitude, latitude) <br>
+For our edges we will format it as (ID, transportType[0=road, 1=flight], startID, endID, direct-distance) <br>
 
 
 ## Data Correction
@@ -105,10 +104,8 @@ Hold a weekly	meeting to check-in on each others’ progress, help each other ou
 Week 3 (Nov 13 - Nov 19): 
 write and test algorithms and functions
 Present what we have for these functions and datasets to our advisor for mid-project deliverable
-Mid-Project Dues: Nov 14-18th
 
 Week 4 (Nov 19 - Nov 26) Thanksgiving Break: 
-Correct any errors or suggestions given after our mid-project Check In.
 
 Week 5 (Nov 27 - Dec 4): 
 After Thanksgiving, we will tidy up and finish all algorithms and begin work on the presentation, readme, report, and video.
