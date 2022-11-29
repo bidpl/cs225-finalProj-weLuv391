@@ -15,12 +15,9 @@ class fullGraph{
     * This will take in a file with the given data type and create two connected graphs from it
     * It will also construct a KD-tree of the longitude/latitude points to be used in connectGraphs();
     * 
-    * @param transport1 - the file name that holds the data for our nodes that represent our first travel type
-    * @param transport2 - the file name that holds the data for our nodes that represent our second travel type
-    * @param travelEdge1 - the file name that holds the data for our edges that connect our 1st travel type together
-    * @param travelEdge2 - the file name that holds the data for our edges of the 2nd data type
+    * @param listofFiles a vector that holds all of ur files where its stored as the nodes1, edges1, nodes2, edges2, ....
     */
-    fullGraph(const std::string& transport1, const std::string& transport2, const std::string& travelEdge1, const std::string& travelEdge2 );
+    fullGraph(const std::vector<std::string> listofFiles);
 
     /*
     * @brief will be used by the constructor, it will take in a file with all the Nodes and insert them all in the graph.
@@ -44,13 +41,13 @@ class fullGraph{
     * This can be used to get the longitude/lattiude from the allPoints
     */
 
-    int getTransport1Start();
+    // int getTransport1Start();
 
-    int getTransport1End();
+    // int getTransport1End();
 
-    int getTransport2Start();
+    // int getTransport2Start();
 
-    int getTransport2End();
+    // int getTransport2End();
 
 
     /*
@@ -62,10 +59,10 @@ class fullGraph{
 
     private:
         Graph fullG_;
-        std::vector<std::pair<double,double>> allPoints; // A vector to hold our nodes 
-        int transport1_start;
-        int transport2_end;
-        std::map<std::pair<double,double>, int> coorToID; // a map that relates our coordinate of long/lat to its unique id
+        // std::vector<std::pair<double,double>> allPoints; // A vector to hold our nodes 
+        // int transport1_start;
+        // int transport2_end;
+        // std::map<std::pair<double,double>, int> coorToID; // a map that relates our coordinate of long/lat to its unique id
        // KDTree lat_longTree_; // currently commented out untill kdTree.h/hpp is implemented
 };
 
