@@ -55,7 +55,7 @@ void Sanitizer::getCleanedData(){
   myfile.close();
 
   //onto our output file nodes.txt, we want to output each string in outVec on a single line
-  newfile.open("nodes.txt",ios_base::out);
+   newfile.open("../src/nodes.txt",ios_base::out);
   ostream_iterator<string> out_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out_itr);
   newfile.close();
@@ -154,7 +154,7 @@ void Sanitizer::getCleanedData(){
   myfile.close();
 
   //this time, *append* our new outVec onto the nodes.txt file
-  newfile.open("nodes.txt",ios_base::app);
+  newfile.open("../src/nodes.txt",ios_base::app);
   ostream_iterator<string> out2_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out2_itr);
   newfile.close();
@@ -179,7 +179,7 @@ void Sanitizer::getCleanedData(){
   edgeCountIND.push_back(edgeCount);
   myfile.close();
   
-  newfile.open("edges.txt",ios_base::out);
+  newfile.open("../src/edges.txt",ios_base::out);
   ostream_iterator<string> out3_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out3_itr);
   newfile.close();
@@ -214,7 +214,7 @@ void Sanitizer::getCleanedData(){
   edgeCountIND.push_back(edgeCount-(prevEdgeCount+numConnected));
   edgeCountIND.push_back(numConnected);
   //append to edges.txt
-  newfile.open("edges.txt",ios_base::app);
+  newfile.open("../src/edges.txt",ios_base::app);
   ostream_iterator<string> out4_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out4_itr);
   newfile.close();
