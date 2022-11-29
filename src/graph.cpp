@@ -97,6 +97,6 @@ bool Graph::insertEdge(int routeID, Node * node1, Node * node2, double distance,
 //do we need this as a parameter as it's already Graph's private variable?
 double Graph::getTravelTime(Edge * edge, std::vector<double> speedLookup) {
     int type = edge->routeType;
-    if (type < 0 || type >= speedLookup.size()) throw std::runtime_error("route type doesn't exist");
+    if (type < 0 || (unsigned long)type >= speedLookup.size()) throw std::runtime_error("route type doesn't exist");
     return speedLookup[type];
 }
