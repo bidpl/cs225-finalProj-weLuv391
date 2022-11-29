@@ -37,20 +37,6 @@ class fullGraph{
     int insertAllEdges(const std::string& edgefile);
 
     /*
-    * These set of four fns give the start/end index of their respective node type 
-    * This can be used to get the longitude/lattiude from the allPoints
-    */
-
-    // int getTransport1Start();
-
-    // int getTransport1End();
-
-    // int getTransport2Start();
-
-    // int getTransport2End();
-
-
-    /*
     * @brief Using our graph and a KD Tree of longitude/latitude coordinates of our second transport type, 
     * we will connect transport1 vertex to that of the second vertex making one whole connected graph 
     *
@@ -59,10 +45,9 @@ class fullGraph{
 
     private:
         Graph fullG_;
-        // std::vector<std::pair<double,double>> allPoints; // A vector to hold our nodes 
-        // int transport1_start;
-        // int transport2_end;
-        // std::map<std::pair<double,double>, int> coorToID; // a map that relates our coordinate of long/lat to its unique id
-       // KDTree lat_longTree_; // currently commented out untill kdTree.h/hpp is implemented
+        std::vector<std::pair<double,double>> allPoints; // A vector to hold our nodes 
+        std::vector<std::pair<int,int>> nodeIndex; // a vector to hold the start/end position of each Node in our vector of allPoints
+        std::map<std::pair<double,double>, int> coorToID; // a map that relates our coordinate of long/lat to its unique id
+       
 };
 
