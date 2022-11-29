@@ -44,16 +44,18 @@ void Sanitizer::getCleanedData(){
     nodePair.first = stod(lineVec[1]);
     nodePair.second = stod(lineVec[2]);
     allPoints.push_back(nodePair);
+    coorToID[nodePair] = stoi(lineVec[0]);
     nodeCount++;
 
   }
+  nodeCountIND.push_back(nodeCount);
   nodeStartEnd.second = nodeCount-1; //load the end index and push into our vector
   nodeIndex.push_back(nodeStartEnd);
   nodeStartEnd.first = nodeCount; //load the start index of our next data type
   myfile.close();
 
   //onto our output file nodes.txt, we want to output each string in outVec on a single line
-  newfile.open("Edges_Nodes/nodes.txt",ios_base::out);
+  newfile.open("nodes.txt",ios_base::out);
   ostream_iterator<string> out_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out_itr);
   newfile.close();
@@ -71,7 +73,7 @@ void Sanitizer::getCleanedData(){
 
   //temporary vectors to be push_back onto the vector 'airports'
   vector<string> tempVec;
-
+  int oldNodeCount = nodeCount;
   int airportCount = 1;
   //repeat the process as above, with a few nuances
   while(getline(myfile, line)) {
@@ -135,19 +137,24 @@ void Sanitizer::getCleanedData(){
 
               //next airport:
               airportCount++;
+              nodePair.first = stod(lineVec[7]);
+              nodePair.second = stod(lineVec[6]);
+              allPoints.push_back(nodePair);
+              coorToID[nodePair] = stoi(lineVec[0]);
               nodeCount++;
 
             default: break;                     
           }
         }
   }
+  nodeCountIND.push_back(nodeCount-oldNodeCount);
   nodeStartEnd.second = nodeCount-1; //load the end index and push into our vector
   nodeIndex.push_back(nodeStartEnd);
   
   myfile.close();
 
   //this time, *append* our new outVec onto the nodes.txt file
-  newfile.open("Edges_Nodes/nodes.txt",ios_base::app);
+  newfile.open("nodes.txt",ios_base::app);
   ostream_iterator<string> out2_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out2_itr);
   newfile.close();
@@ -169,9 +176,10 @@ void Sanitizer::getCleanedData(){
     outVec.push_back(lineVec[0]+", 0, "+ lineVec[1] +", "+ lineVec[2] + ", " +lineVec[3]);
     edgeCount++;
   }
+  edgeCountIND.push_back(edgeCount);
   myfile.close();
   
-  newfile.open("Edges_Nodes/edges.txt",ios_base::out);
+  newfile.open("edges.txt",ios_base::out);
   ostream_iterator<string> out3_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out3_itr);
   newfile.close();
@@ -182,28 +190,31 @@ void Sanitizer::getCleanedData(){
 
   //this time we are creating our own airportEdges, assuming there are flights
   //from each commercial airport to every other commericial airport
+  int prevEdgeCount = edgeCount;
   outVec = connectGraphs(edgeCount); // calls our kd fn and maps every airport to have an edge with the nearest road intersection
-  int airEdgeCounter = 1;
+  int numConnected = edgeCount - prevEdgeCount;
+  //int airEdgeCounter = 1;
 
   //now we use the previously saved airports vector from STEP 2
   for(unsigned long i=0; i<airports.size(); i++){
     for(unsigned long j=i+1; j<airports.size(); j++){
 
       //note there were 21692 road edges
-        string edgeID = to_string(edgeCount+airEdgeCounter);
+        string edgeID = to_string(edgeCount);
         string startNodeID = airports[i][0];
         string endNodeID = airports[j][0];
         double l2distance = sqrt(pow((stod(airports[i][1])-stod(airports[j][1])),2)+pow((stod(airports[i][2])-stod(airports[j][2])),2));
         
-        airEdgeCounter++;
+        //airEdgeCounter++;
         outVec.push_back(edgeID+", 1, "+startNodeID+", "+endNodeID+", "+to_string(l2distance));
         edgeCount++;
       }
     }
-    
 
+  edgeCountIND.push_back(edgeCount-(prevEdgeCount+numConnected));
+  edgeCountIND.push_back(numConnected);
   //append to edges.txt
-  newfile.open("Edges_Nodes/edges.txt",ios_base::app);
+  newfile.open("edges.txt",ios_base::app);
   ostream_iterator<string> out4_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out4_itr);
   newfile.close();
@@ -213,7 +224,8 @@ void Sanitizer::getCleanedData(){
 }
 
 vector<string> Sanitizer::connectGraphs(int currIdx) {
-    int edgeID = currIdx+1;// our edgeID
+    int edgeID = currIdx;// our edgeID
+    nodeCountIND.push_back(0); // we push 0 into our vector to denote that these edges are connecting two transports together and therefore don't have a type
     vector<string> outVec;
 
     std::vector<Point<2>> coordinateVector; // a vector of points that match to our coordinates but in 
@@ -222,7 +234,7 @@ vector<string> Sanitizer::connectGraphs(int currIdx) {
     }
     KDTree<2> coordsTree (coordinateVector); // creates a KDTree out of the coordinates of our first 
 
-    for(std::vector<std::pair<int,int>>::iterator it = nodeIndex.begin()+2; it!= nodeIndex.end(); it++) { //loop through all the start/ends of the different transportation types
+    for(std::vector<std::pair<int,int>>::iterator it = nodeIndex.begin()+1; it!= nodeIndex.end(); it++) { //loop through all the start/ends of the different transportation types
         int start = (*it).first;
         int end = (*it).second;
         for(int i = start; i<=end; i++) { //loop through the amount of transportation nodes
@@ -231,11 +243,10 @@ vector<string> Sanitizer::connectGraphs(int currIdx) {
             int startNode = coorToID[mapLookup]; //get the ID of the corresponding coordinates
             int destinationNode = coorToID[allPoints[i]];
           
-            outVec.push_back(to_string(edgeID)+", 1, "+to_string(startNode)+", "+to_string(destinationNode)+", "+to_string(0)); // adds our 
+            outVec.push_back(to_string(edgeID)+", 0, "+to_string(startNode)+", "+to_string(destinationNode)+", "+to_string(0)); // adds our 
             edgeID++;
             edgeCount++;
         }
     }
-
   return outVec;
 }
