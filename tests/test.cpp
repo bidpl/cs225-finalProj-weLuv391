@@ -8,7 +8,7 @@ TEST_CASE("practiceTest", "[weight=1][part=1]") {
   REQUIRE( i == 0 );
 }
 
-TEST_CASE("all edges inserted", "[weight=1][part=input_reader]") {
+TEST_CASE("small edges/test inserted", "[weight=1][part=input_reader]") {
   std::vector<std::string> fileList;
   fileList.push_back("../tests/nodestest.txt");
   fileList.push_back("../tests/edgestest.txt");
@@ -16,6 +16,16 @@ TEST_CASE("all edges inserted", "[weight=1][part=input_reader]") {
 
   REQUIRE( testGraph.getNodeCount() == 3 );
   REQUIRE( testGraph.getEdgeCount() == 1 );
+}
+
+TEST_CASE("massive edges/test inserted", "[weight=1][part=input_reader]") {
+  std::vector<std::string> fileList;
+  fileList.push_back("../tests/nodes.txt");
+  fileList.push_back("../tests/edges.txt");
+  fullGraph testGraph = fullGraph(fileList);
+
+  REQUIRE( testGraph.getNodeCount() == 21077 );
+  REQUIRE( testGraph.getEdgeCount() ==  22128 );
 }
 
 TEST_CASE("Empty Graph", "[part=1]") {
