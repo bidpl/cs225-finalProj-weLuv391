@@ -10,11 +10,12 @@ TEST_CASE("practiceTest", "[weight=1][part=1]") {
 
 TEST_CASE("all edges inserted", "[weight=1][part=input_reader]") {
   std::vector<std::string> fileList;
-  fileList.push_back("nodes.txt");
-  fileList.push_back("edges.txt");
+  fileList.push_back("../tests/nodestest.txt");
+  fileList.push_back("../tests/edgestest.txt");
   fullGraph testGraph = fullGraph(fileList);
 
-  REQUIRE( testGraph.getEdgeCount() == 22128 );
+  REQUIRE( testGraph.getNodeCount() == 3 );
+  REQUIRE( testGraph.getEdgeCount() == 1 );
 }
 
 TEST_CASE("Empty Graph", "[part=1]") {

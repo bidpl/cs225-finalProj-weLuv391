@@ -21,7 +21,7 @@ class fullGraph{
 
     /*
     * @brief will be used by the constructor, it will take in a file with all the Nodes and insert them all in the graph.
-    * It will return an integer value of the index of the last element that was inserted. If the return value is -1, then no items were inserted
+    * It will return the amount of element that was inserted. If the return value is -1, then no items were inserted
     * 
     * @param nodefile the file name that holds the data for our nodes
     */
@@ -29,7 +29,7 @@ class fullGraph{
 
     /*
     * @brief will be used by the constructor, it will take in a file with all the Edges and insert them all in the graph with the proper weidght.
-    * It will return an integer value of the index of the last element that was inserted. If the return value is -1, then no items were inserted
+    * It will return the amoutnt of element that was inserted. If the return value is -1, then no items were inserted
     * 
     * @param edgefile the file name that holds the data for our edges
     * @param needMap a boolean that keeps track if we need to map each longitude/latitude to an ID for later use in the kd tree
@@ -48,6 +48,11 @@ class fullGraph{
     */
     int getNodeCount() {
         return nodesInserted;
+    }
+
+    //getter fn to get the graph
+    Graph getGraph() {
+        return fullG_;
     }
 
 
