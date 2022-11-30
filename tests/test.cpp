@@ -1,10 +1,20 @@
 #include <catch2/catch_test_macros.hpp>
 #include "graph.h"
+#include "fileParser.h"
 
 TEST_CASE("practiceTest", "[weight=1][part=1]") {
   int i = 0;
 
   REQUIRE( i == 0 );
+}
+
+TEST_CASE("all edges inserted", "[weight=1][part=input_reader]") {
+  std::vector<std::string> fileList;
+  fileList.push_back("nodes.txt");
+  fileList.push_back("edges.txt");
+  fullGraph testGraph = fullGraph(fileList);
+
+  REQUIRE( testGraph.getEdgeCount() == 22128 );
 }
 
 TEST_CASE("Empty Graph", "[part=1]") {

@@ -37,17 +37,25 @@ class fullGraph{
     int insertAllEdges(const std::string& edgefile);
 
     /*
-    * @brief Using our graph and a KD Tree of longitude/latitude coordinates of our second transport type, 
-    * we will connect transport1 vertex to that of the second vertex making one whole connected graph 
-    *
+    getter fn that returns the private variable edgesInserted
     */
-    void connectGraphs();
+    int getEdgeCount() {
+        return edgesInserted;
+    }
+
+    /*
+    getter fn that returns the amount of nodes inserted
+    */
+    int getNodeCount() {
+        return nodesInserted;
+    }
+
 
     private:
         Graph fullG_;
-        std::vector<std::pair<double,double>> allPoints; // A vector to hold our nodes 
-        std::vector<std::pair<int,int>> nodeIndex; // a vector to hold the start/end position of each Node in our vector of allPoints
-        std::map<std::pair<double,double>, int> coorToID; // a map that relates our coordinate of long/lat to its unique id
+        int nodesInserted;
+        int edgesInserted;
+
        
 };
 
