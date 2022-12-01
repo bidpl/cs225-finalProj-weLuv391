@@ -1,26 +1,24 @@
 #include "graph.h"
 #include "fileParser.h"
 #include "cs225/kdtree.h"
-#include <iostream>
 #include <fstream>
 #include <string>
-#include <math.h>
 using namespace std;
-fullGraph::fullGraph(const vector< string> listofFiles){
+fullGraph::fullGraph(const vector< string> listofFiles, Graph& fullG_){
     
     vector<string> copyList = listofFiles;
     nodesInserted = 0;
     edgesInserted = 0;
 
     for(vector<string>::iterator it = copyList.begin(); it!=copyList.end(); it++) {
-        nodesInserted += insertAllNodes(*it); //increases our counter by the amount of nodes inserted
+        nodesInserted += insertAllNodes(*it, fullG_); //increases our counter by the amount of nodes inserted
         it++;
-        edgesInserted = insertAllEdges(*it);  // add all of the edges
+        edgesInserted = insertAllEdges(*it, fullG_);  // add all of the edges
     }
 
 }
 
-int fullGraph::insertAllNodes(const std::string& nodeFile) {
+int fullGraph::insertAllNodes(const std::string& nodeFile, Graph& fullG_) {
 
     string tempWord; // a temp string that holds the data from our files
     int i = 0; // a counter variable that will keep track of how many nodes have been added
@@ -56,7 +54,7 @@ int fullGraph::insertAllNodes(const std::string& nodeFile) {
 }
 
 
-int fullGraph::insertAllEdges(const std::string& edgefile) {
+int fullGraph::insertAllEdges(const std::string& edgefile, Graph& fullG_) {
 
     string tempWord; // a temp string that holds the data from our files
     int sourceNode; // these two string are temp vars that will hold the source and destination node for our edges

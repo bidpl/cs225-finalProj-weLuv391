@@ -17,7 +17,7 @@ class fullGraph{
     * 
     * @param listofFiles a vector that holds all of ur files where its stored as the nodes1, edges1, nodes2, edges2, ....
     */
-    fullGraph(const std::vector<std::string> listofFiles);
+    fullGraph(const std::vector<std::string> listofFiles, Graph& fullG_);
 
     /*
     * @brief will be used by the constructor, it will take in a file with all the Nodes and insert them all in the graph.
@@ -25,7 +25,7 @@ class fullGraph{
     * 
     * @param nodefile the file name that holds the data for our nodes
     */
-    int insertAllNodes(const std::string& nodefile);
+    int insertAllNodes(const std::string& nodefile, Graph& fullG_);
 
     /*
     * @brief will be used by the constructor, it will take in a file with all the Edges and insert them all in the graph with the proper weidght.
@@ -34,7 +34,7 @@ class fullGraph{
     * @param edgefile the file name that holds the data for our edges
     * @param needMap a boolean that keeps track if we need to map each longitude/latitude to an ID for later use in the kd tree
     */
-    int insertAllEdges(const std::string& edgefile);
+    int insertAllEdges(const std::string& edgefile, Graph& fullG_);
 
     /*
     getter fn that returns the private variable edgesInserted
@@ -50,14 +50,8 @@ class fullGraph{
         return nodesInserted;
     }
 
-    //getter fn to get the graph
-    Graph getGraph() {
-        return fullG_;
-    }
-
 
     private:
-        Graph fullG_;
         int nodesInserted;
         int edgesInserted;
 
