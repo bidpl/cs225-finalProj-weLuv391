@@ -11,16 +11,67 @@ Sanitizer::Sanitizer(){
 void Sanitizer::getCleanedData(){
   
   string line;            // used to read/store comma-separated or blankspace-separated strings
-  ifstream myfile;        // original data files we openblu
+  ifstream myfile;        // original data files we open
   fstream newfile;        // new txt file we output or append to
   vector<string> lineVec; // used to iterate through individual line of input data file
   vector<string> outVec;     // used to represent a single line in our output text file
   std::pair<double,double> nodePair; //two pairs to measure its long/lat and its start/end index in our vector
   std::pair<int,int> nodeStartEnd;
-  //STEP 1: ROAD INTERSECTION NODES
+  int oldNodeCount;
 
-  //open data file from out dataset
-  myfile.open("../data/roadIntersections.dat");
+  
+
+  //STEP 0: File names entry
+  std::string inputfile1;
+  std::string inputfile2;
+  std::string inputfile3;
+  std::string outputfileNodes;
+  std::string outputfileEdges;
+
+  //open data file 1 from out data folder (road intersections)
+  cout << "Please enter the name and extension of your road intersections file: " << endl;
+  cout << "Each line in this original file: [NodeID, longitude, latitude]" << endl;
+  cout << "Example: roadIntersections.dat " << endl;
+	cin >> inputfile1;
+  cout << "You entered inputfile1 = " + inputfile1 << endl;
+  cout << "" <<endl;
+
+  //open data file 2 from out data folder (airports)
+  cout << "Please enter the name and extension of your airports file: " << endl;
+  cout << "Each line in this file: [AirportID, name, city, country, IATA, ICAO, latitude, longitude, altitude, timezone, DST, database time, type, source]" << endl;
+  cout << "Example: airports.dat " << endl;
+	cin >> inputfile2;
+  cout << "You entered inputfile2 = " + inputfile2 << endl;
+  cout << "" <<endl;
+
+  //open data file 3 from out data folder (road edges)
+  cout << "Please enter the name and extension of your road edges file: " << endl;
+  cout << "Each line in this file: [EdgeID, startNodeID, endID, direct-distance]" << endl;
+  cout << "Example: roadEdgeData.dat " << endl;
+	cin >> inputfile3;
+  cout << "You entered inputfile3 = " + inputfile3 << endl;
+  cout << "" <<endl;
+
+  //open output file 1 (nodes)
+  cout << "Please enter the name and extension of desired output NODES file: " << endl;
+  cout << "Each line in this file: [NodeID, [type: ground=0, air=1], [name: ground=0, air=IATA], longitude, latitude]" << endl;
+  cout << "Example: nodes.txt " << endl;
+	cin >> outputfileNodes;
+  cout << "You entered outputfileNodes = " + outputfileNodes << endl;
+  cout << "" <<endl;
+ 
+  //open output file 2 (edges)
+  cout << "Please enter the name and extension of desired output EDGE file: " << endl;
+  cout << "Each line in this file: [EdgeID, [type: ground=0, air=1], startNodeID, endID, direct-distance]" << endl;
+  cout << "Example: edges.txt " << endl;
+	cin >> outputfileEdges;
+  cout << "You entered outputfileEdges = " + outputfileEdges << endl;
+  cout << "" <<endl;
+
+
+  //STEP 1: ROAD INTERSECTION NODES
+  //for our use: we used inputfile1 = "../data/roadIntersections.dat"
+  myfile.open(inputfile1);
 
   //in this dataset, each element is separated by a ' '
   // the following nested while loops will convert each line of the .dat file
@@ -35,11 +86,9 @@ void Sanitizer::getCleanedData(){
           getline(ss, substr, ' ');
           lineVec.push_back(substr);
       }
-
     //outVec is a vector of strings, where each string represents:
     // "nodeID, type=0, name=0, longitude, latitude"
     outVec.push_back(lineVec[0]+", 0, 0, "+ lineVec[1] +", "+ lineVec[2]);
-
 
     nodePair.first = stod(lineVec[1]);
     nodePair.second = stod(lineVec[2]);
@@ -55,7 +104,9 @@ void Sanitizer::getCleanedData(){
   myfile.close();
 
   //onto our output file nodes.txt, we want to output each string in outVec on a single line
-   newfile.open("../src/nodes.txt",ios_base::out);
+
+  //we used "../src/nodes.txt"
+   newfile.open(outputfileNodes,ios_base::out);
   ostream_iterator<string> out_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out_itr);
   newfile.close();
@@ -63,9 +114,9 @@ void Sanitizer::getCleanedData(){
 
   //STEP 2: AIRPORT NODES
 
-  //now let us open our next dataset and clear outVec contents
-  myfile.open("../data/airports.dat"); 
-  outVec.clear();
+  //for our use: we used inputfile2 = "../data/airports.dat"
+  myfile.open(inputfile2); 
+  outVec.clear(); 
 
   //we want to eventually create flight edges between each airport node, so let us 
   //save the data we need into a vector<vector<string>> called airports
@@ -73,8 +124,8 @@ void Sanitizer::getCleanedData(){
 
   //temporary vectors to be push_back onto the vector 'airports'
   vector<string> tempVec;
-  int oldNodeCount = nodeCount;
-  int airportCount = 1;
+  oldNodeCount = nodeCount;
+  int airportCount = 0;
   //repeat the process as above, with a few nuances
   while(getline(myfile, line)) {
       stringstream ss(line);
@@ -91,7 +142,7 @@ void Sanitizer::getCleanedData(){
           //get the airportID, we only want specific airports in california
           int airportID = stoi(lineVec[0]);           
         
-          //switch statement omits Nevada and military airports
+          //switch statement omits Nevada, Oregon, Washington and military airports
           switch(airportID){                          
             case 3433: 
             case 3434:
@@ -129,10 +180,10 @@ void Sanitizer::getCleanedData(){
               //      lineVec[6] = latitude
 
               //note that there are 21047 intersection nodes
-              outVec.push_back(to_string(21047+airportCount)+", 1, "+lineVec[4]+", "+lineVec[7]+", "+lineVec[6]); 
+              outVec.push_back(to_string(oldNodeCount+airportCount)+", 1, "+lineVec[4]+", "+lineVec[7]+", "+lineVec[6]); 
 
               //we want to save the airportID, longitude, latitude for use later
-              tempVec = {to_string(21047+airportCount), lineVec[7], lineVec[6]};
+              tempVec = {to_string(oldNodeCount+airportCount), lineVec[7], lineVec[6]};
               airports.push_back(tempVec);
 
               //next airport:
@@ -154,17 +205,21 @@ void Sanitizer::getCleanedData(){
   myfile.close();
 
   //this time, *append* our new outVec onto the nodes.txt file
-  newfile.open("../src/nodes.txt",ios_base::app);
+
+  //we used "../src/nodes.txt"
+  newfile.open(outputfileNodes,ios_base::app);
   ostream_iterator<string> out2_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out2_itr);
   newfile.close();
   //at this point we should have airports and intersections in one file
 
   //STEP 3: ROAD SEGMENT EDGES
-  //repeat using dataset roadEdgeData.dat
-  myfile.open("../data/roadEdgeData.dat");
+  //for our use: we used inputfile3 = "../data/roadEdgeData.dat"
+  myfile.open(inputfile3);
   outVec.clear();
 
+ //use prevEdge to ensure no duplicate edges
+  string prevEdge = "";
   while(getline(myfile, line)) {
       stringstream ss(line);
       lineVec.clear();
@@ -173,13 +228,25 @@ void Sanitizer::getCleanedData(){
           getline(ss, substr, ' ');
           lineVec.push_back(substr);
       }
-    outVec.push_back(lineVec[0]+", 0, "+ lineVec[1] +", "+ lineVec[2] + ", " +lineVec[3]);
-    edgeCount++;
+
+    //first make sure there are not connecting the same node to itself
+    //make sure it is connecting road intersections, not airports
+      if((stoi(lineVec[1])!=stoi(lineVec[2]))&&(stoi(lineVec[1])<oldNodeCount)&&(stoi(lineVec[2])<oldNodeCount)){
+
+        //since edges are always arranged such that startNodeID < endNodeID, and progress as startNodeID increase
+        //we only need to check whether two adjacent edges share the same [start,end] pair
+        if(lineVec[1]+lineVec[2] != prevEdge){
+          outVec.push_back(lineVec[0]+", 0, "+ lineVec[1] +", "+ lineVec[2] + ", " +lineVec[3]);
+          edgeCount++;
+          prevEdge = lineVec[1]+lineVec[2];
+        }
+      }
   }
   edgeCountIND.push_back(edgeCount);
   myfile.close();
-  
-  newfile.open("../src/edges.txt",ios_base::out);
+
+  //we used "../src/edges.txt"
+  newfile.open(outputfileEdges,ios_base::out);
   ostream_iterator<string> out3_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out3_itr);
   newfile.close();
@@ -214,7 +281,9 @@ void Sanitizer::getCleanedData(){
   edgeCountIND.push_back(edgeCount-(prevEdgeCount+numConnected));
   edgeCountIND.push_back(numConnected);
   //append to edges.txt
-  newfile.open("../src/edges.txt",ios_base::app);
+
+  //we used "../src/edges.txt"
+  newfile.open(outputfileEdges,ios_base::app);
   ostream_iterator<string> out4_itr(newfile, "\n");
   copy(outVec.begin(), outVec.end(), out4_itr);
   newfile.close();
