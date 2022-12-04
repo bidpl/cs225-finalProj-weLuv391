@@ -1,6 +1,8 @@
 #include "graph.h"
+#include "kdtree.h"
 #include <stdexcept>
 #include <iostream>
+#include <map>
 #include <cmath>
 
 Graph::Node::Node() : 
@@ -222,4 +224,17 @@ Graph::Node Graph::Iterator::operator*() {
 
 bool Graph::Iterator::operator!=(const Iterator &other) {
     return current_ != other.current_;
+}
+
+int Graph::getNearestNode(std::pair<double, double> loc) const {
+    std::map<std::pair <double, double>, int> coorToID;
+    std::vector<Point<2>> coordinateVector; // a vector of points that match to our coordinates but in 
+    for(const Node & node : nodes) { // loop through the amount of Nodes in our 1st data type
+        coordinateVector.push_back(Point<2>(node.coords.first, node.coords.second)); // converts our pair vector to that of Points  to use in the KD tree
+        coorToID[std::pair<double,double>(node.coords.first, node.coords.second)] = node.ID;
+    }
+    KDTree<2> coordsTree (coordinateVector); // creates a KDTree out of the coordinates of our first
+    Point<2> closestCoordinate2 = coordsTree.findNearestNeighbor(Point<2>(loc.first, loc.second));
+    std::pair <double, double> mapLookup (closestCoordinate2[0],closestCoordinate2[1]);
+    return coorToID[mapLookup]; //get the ID of the corresponding coordinates
 }

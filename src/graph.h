@@ -154,7 +154,7 @@ class Graph {
          * @param loc input location
          * @return int index to nearest match
          */
-        int getNearestNode(std::pair<double, double> loc);
+        int getNearestNode(std::pair<double, double> loc) const;
 
         // Getters and setters
         std::vector<Edge> & getEdgeList() {
