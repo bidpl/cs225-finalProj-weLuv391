@@ -2,13 +2,13 @@
 #include "graph.h"
 #include "fileParser.h"
 
-TEST_CASE("practiceTest", "[weight=1][part=1]") {
+TEST_CASE("practiceTest", "[part=template]") {
   int i = 0;
 
   REQUIRE( i == 0 );
 }
 
-TEST_CASE("small edges/test inserted", "[weight=1][part=input_reader]") {
+TEST_CASE("small edges/test inserted", "[part=input_reader]") {
   std::vector<std::string> fileList;
   Graph fullG_;
   fileList.push_back("../tests/nodestest.txt");
@@ -19,7 +19,7 @@ TEST_CASE("small edges/test inserted", "[weight=1][part=input_reader]") {
   REQUIRE( testGraph.getEdgeCount() == 1 );
 }
 
-TEST_CASE("massive edges/test inserted", "[weight=1][part=input_reader]") {
+TEST_CASE("massive edges/test inserted", "[part=input_reader]") {
   std::vector<std::string> fileList;
   Graph fullG_;
   fileList.push_back("../tests/nodes.txt");
@@ -30,7 +30,7 @@ TEST_CASE("massive edges/test inserted", "[weight=1][part=input_reader]") {
   REQUIRE( testGraph.getEdgeCount() ==  22128 );
 }
 
-TEST_CASE("Empty Graph", "[part=1]") {
+TEST_CASE("Empty Graph", "[part=graph]") {
   Graph testGraph;
 
   //testing getAdj
@@ -54,7 +54,7 @@ TEST_CASE("Empty Graph", "[part=1]") {
   } catch (...) { REQUIRE(true); }
 }
 
-TEST_CASE("Multiple Nodes Insert", "[part=1]") {
+TEST_CASE("Multiple Nodes Insert", "[part=graph]") {
   Graph testGraph;
 
   //ensures each insert is valid
@@ -83,7 +83,7 @@ TEST_CASE("Multiple Nodes Insert", "[part=1]") {
   REQUIRE(testGraph.insertNode(6, std::pair<double, double>()));
 }
 
-TEST_CASE("Multiple Edges Insert", "[part=1]") {
+TEST_CASE("Multiple Edges Insert", "[part=graph]") {
   Graph testGraph;
 
   for(int i = 0; i < 5; ++i) {
@@ -147,7 +147,7 @@ TEST_CASE("Multiple Edges Insert", "[part=1]") {
   REQUIRE(!(testGraph.insertEdge(6, 2, 4, 0, 0)));
 }
 
-TEST_CASE("Get Travel Time", "[part=1]") {
+TEST_CASE("Get Travel Time", "[part=graph]") {
   Graph testGraph;
 
   for(int i = 0; i < 5; ++i) {
