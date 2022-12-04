@@ -8,7 +8,7 @@ Sanitizer::Sanitizer(){
   nodeCount = 0;
   edgeCount = 0;
 }
-void Sanitizer::getCleanedData(){
+void Sanitizer::getCleanedData(std::string inputfile1, std::string inputfile1, std::string inputfile1){
   
   string line;            // used to read/store comma-separated or blankspace-separated strings
   ifstream myfile;        // original data files we open
@@ -19,55 +19,8 @@ void Sanitizer::getCleanedData(){
   std::pair<int,int> nodeStartEnd;
   int oldNodeCount;
 
-  
-
-  //STEP 0: File names entry
-  std::string inputfile1;
-  std::string inputfile2;
-  std::string inputfile3;
-  std::string outputfileNodes;
-  std::string outputfileEdges;
-
-  //open data file 1 from out data folder (road intersections)
-  cout << "Please enter the name and extension of your road intersections file: " << endl;
-  cout << "Each line in this original file: [NodeID, longitude, latitude]" << endl;
-  cout << "Example: roadIntersections.dat " << endl;
-	cin >> inputfile1;
-  cout << "You entered inputfile1 = " + inputfile1 << endl;
-  cout << "" <<endl;
-
-  //open data file 2 from out data folder (airports)
-  cout << "Please enter the name and extension of your airports file: " << endl;
-  cout << "Each line in this file: [AirportID, name, city, country, IATA, ICAO, latitude, longitude, altitude, timezone, DST, database time, type, source]" << endl;
-  cout << "Example: airports.dat " << endl;
-	cin >> inputfile2;
-  cout << "You entered inputfile2 = " + inputfile2 << endl;
-  cout << "" <<endl;
-
-  //open data file 3 from out data folder (road edges)
-  cout << "Please enter the name and extension of your road edges file: " << endl;
-  cout << "Each line in this file: [EdgeID, startNodeID, endID, direct-distance]" << endl;
-  cout << "Example: roadEdgeData.dat " << endl;
-	cin >> inputfile3;
-  cout << "You entered inputfile3 = " + inputfile3 << endl;
-  cout << "" <<endl;
-
-  //open output file 1 (nodes)
-  cout << "Please enter the name and extension of desired output NODES file: " << endl;
-  cout << "Each line in this file: [NodeID, [type: ground=0, air=1], [name: ground=0, air=IATA], longitude, latitude]" << endl;
-  cout << "Example: nodes.txt " << endl;
-	cin >> outputfileNodes;
-  cout << "You entered outputfileNodes = " + outputfileNodes << endl;
-  cout << "" <<endl;
- 
-  //open output file 2 (edges)
-  cout << "Please enter the name and extension of desired output EDGE file: " << endl;
-  cout << "Each line in this file: [EdgeID, [type: ground=0, air=1], startNodeID, endID, direct-distance]" << endl;
-  cout << "Example: edges.txt " << endl;
-	cin >> outputfileEdges;
-  cout << "You entered outputfileEdges = " + outputfileEdges << endl;
-  cout << "" <<endl;
-
+  std::string outputfileNodes = "nodes.txt";
+  std::string outputfileEdges = "edges.txt";
 
   //STEP 1: ROAD INTERSECTION NODES
   //for our use: we used inputfile1 = "../data/roadIntersections.dat"
