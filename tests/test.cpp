@@ -1,11 +1,34 @@
 #include <catch2/catch_test_macros.hpp>
 #include "graph.h"
 #include "dsets.h"
+#include "fileParser.h"
 
 TEST_CASE("practiceTest", "[weight=1][part=1]") {
   int i = 0;
 
   REQUIRE( i == 0 );
+}
+
+TEST_CASE("small edges/test inserted", "[weight=1][part=input_reader]") {
+  std::vector<std::string> fileList;
+  Graph fullG_;
+  fileList.push_back("../tests/nodestest.txt");
+  fileList.push_back("../tests/edgestest.txt");
+  fullGraph testGraph(fileList, fullG_);
+
+  REQUIRE( testGraph.getNodeCount() == 3 );
+  REQUIRE( testGraph.getEdgeCount() == 1 );
+}
+
+TEST_CASE("massive edges/test inserted", "[weight=1][part=input_reader]") {
+  std::vector<std::string> fileList;
+  Graph fullG_;
+  fileList.push_back("../tests/nodes.txt");
+  fileList.push_back("../tests/edges.txt");
+  fullGraph testGraph = fullGraph(fileList, fullG_);
+
+  REQUIRE( testGraph.getNodeCount() == 21077 );
+  REQUIRE( testGraph.getEdgeCount() ==  22128 );
 }
 
 TEST_CASE("Empty Graph", "[part=1]") {
