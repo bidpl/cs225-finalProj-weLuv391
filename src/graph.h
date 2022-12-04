@@ -5,6 +5,8 @@
 
 class Graph {
     public:
+        const double LINEAR_CONV_FACTOR = 69.0; // 69 miles per degree, set this to change units
+
         class Node;
         class Edge;
 
@@ -87,13 +89,20 @@ class Graph {
         bool insertEdge(int routeID, int IDa, int IDb, double distance, int routeType);
 
         /**
+         * @brief Get speed of an edge based on routeID + speed lookup
+         * 
+         * @param edgeID
+         * @return double - speed of that edge
+         */
+        double getTravelSpeed(int edgeID) const;
+
+        /**
          * @brief Get the travel time of an edge based on speed lookup table
          * 
          * @param edgeID
-         * @param speedLookup 
          * @return double - time it takes to travel that edge
          */
-        double getTravelTime(int edgeID, const std::vector<double> & speedLookup);
+        double getTravelTime(int edgeID) const;
 
         class Iterator : std::iterator<std::forward_iterator_tag, Node> {
             public:
@@ -118,6 +127,44 @@ class Graph {
         Iterator end();
         Iterator iterAt(int startIdx);
 
+        /**
+         * @brief converts distance in degrees (what's given in edge) to miles
+         * 
+         * @param degDistance - distance in degrees (given in edge obj)
+         * 
+         * @return distance in miles
+         * 
+         */
+        double degToLinear(double degDistance) const;
+
+        /**
+         * @brief helper to get linear distance between two lat/long pairs
+         * 
+         * @param coord1
+         * @param coord2
+         * 
+         * @return linear distance between them
+         */
+
+        double coordDistance(std::pair<double, double> coord1, std::pair<double, double> coord2) const;
+
+        // Getters and setters
+        std::vector<Edge> & getEdgeList() {
+            return edgeList;
+        }
+
+        std::vector<Node> & getNodes() {
+            return nodes;
+        }
+
+        std::vector<double> & getSpeedLookup() {
+            return speedLookup;
+        }
+
+        void setSpeedLookup(std::vector<double> & newSpeed) {
+            speedLookup = newSpeed;
+        }
+
     private:
         // Edge List
         std::vector<Edge> edgeList;
@@ -125,6 +172,6 @@ class Graph {
         // Node list, might need switch to map to get ID access
         std::vector<Node> nodes;
 
-        // Speed (indexed by routeType, might need map)
+        // Speed (indexed by routeType, might need map), store as proj units (see LINEAR_CONV_FACTOR)
         std::vector<double> speedLookup;
 };

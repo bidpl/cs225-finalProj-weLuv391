@@ -1,6 +1,7 @@
 #include "graph.h"
 #include <stdexcept>
 #include <iostream>
+#include <cmath>
 
 Graph::Node::Node() : 
     ID(-1) {}
@@ -122,10 +123,9 @@ bool Graph::insertEdge(int routeID, int IDa, int IDb, double distance, int route
     return true;
 }
 
-//do we need this as a parameter as it's already Graph's private variable?
-double Graph::getTravelTime(int edgeID, const std::vector<double> & speedLookup) {
+double Graph::getTravelSpeed(int edgeID) const {
     if(edgeID < 0 || edgeID >= (int) edgeList.size()) {
-        throw std::runtime_error("Graph::getTravelTime: invalid edgeID " + std::to_string(edgeID));
+        throw std::out_of_range("Graph::getTravelTime: invalid edgeID " + std::to_string(edgeID));
     }
     
     const double DEFAULT_SPEED = 1.0;
@@ -142,6 +142,22 @@ double Graph::getTravelTime(int edgeID, const std::vector<double> & speedLookup)
     }
 
     return speedLookup[routeType];
+}
+
+double Graph::getTravelTime(int edgeID) const {
+    if(edgeID < 0 || edgeID >= (int) edgeList.size()) {
+        throw std::out_of_range("Graph::getTravelTime: invalid edgeID " + std::to_string(edgeID));
+    }
+
+    return degToLinear(edgeList[edgeID].distance)/getTravelSpeed(edgeID);
+}
+
+double Graph::degToLinear(double degDistance) const {
+    return degDistance * LINEAR_CONV_FACTOR;
+}
+
+double Graph::coordDistance(std::pair<double, double> coord1, std::pair<double, double> coord2) const {
+    return degToLinear(sqrt( pow(coord1.first - coord2.first, 2) + pow(coord1.second - coord2.second, 2) ));
 }
 
 Graph::Iterator::Iterator() : current_(Node()) {}
@@ -207,4 +223,3 @@ Graph::Node Graph::Iterator::operator*() {
 bool Graph::Iterator::operator!=(const Iterator &other) {
     return current_ != other.current_;
 }
-
