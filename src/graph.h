@@ -148,6 +148,14 @@ class Graph {
 
         double coordDistance(std::pair<double, double> coord1, std::pair<double, double> coord2) const;
 
+        /**
+         * @brief returns index of nearest node to a given loc
+         * 
+         * @param loc input location
+         * @return int index to nearest match
+         */
+        int getNearestNode(std::pair<double, double> loc);
+
         // Getters and setters
         std::vector<Edge> & getEdgeList() {
             return edgeList;
