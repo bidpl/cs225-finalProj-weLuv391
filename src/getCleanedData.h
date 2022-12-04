@@ -15,7 +15,7 @@ using namespace std;
 class Sanitizer{
     public:
         Sanitizer();
-        void getCleanedData();
+        void getCleanedData(std::string inputfile1, std::string inputfile2, std::string inputfile3);
         //currIdx refers to the last edge inserted
         //returns a vector of strings that contian our edges
         vector<string> connectGraphs(int currIdx);
