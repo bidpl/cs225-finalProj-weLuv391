@@ -8,7 +8,7 @@ Sanitizer::Sanitizer(){
   nodeCount = 0;
   edgeCount = 0;
 }
-void Sanitizer::getCleanedData(std::string inputfile1, std::string inputfile2, std::string inputfile3){
+void Sanitizer::getCleanedData(std::string intersectionFile, std::string airportFile, std::string roadEdgeFile){
   
   string line;            // used to read/store comma-separated or blankspace-separated strings
   ifstream myfile;        // original data files we open
@@ -19,12 +19,13 @@ void Sanitizer::getCleanedData(std::string inputfile1, std::string inputfile2, s
   std::pair<int,int> nodeStartEnd;
   int oldNodeCount;
 
-  std::string outputfileNodes = "nodes.txt";
-  std::string outputfileEdges = "edges.txt";
+  string outputfileNodes = "../src/nodes.txt";
+  string outputfileEdges = "../src/edges.txt";
 
   //STEP 1: ROAD INTERSECTION NODES
-  //for our use: we used inputfile1 = "../data/roadIntersections.dat"
-  myfile.open(inputfile1);
+  //for our use: we used intersectionFile = "../data/roadIntersections.dat"
+  
+  myfile.open("../data/"+intersectionFile);
 
   //in this dataset, each element is separated by a ' '
   // the following nested while loops will convert each line of the .dat file
@@ -67,8 +68,8 @@ void Sanitizer::getCleanedData(std::string inputfile1, std::string inputfile2, s
 
   //STEP 2: AIRPORT NODES
 
-  //for our use: we used inputfile2 = "../data/airports.dat"
-  myfile.open(inputfile2); 
+  //for our use: we used airportFile = "../data/airports.dat"
+  myfile.open("../data/" + airportFile); 
   outVec.clear(); 
 
   //we want to eventually create flight edges between each airport node, so let us 
@@ -167,8 +168,8 @@ void Sanitizer::getCleanedData(std::string inputfile1, std::string inputfile2, s
   //at this point we should have airports and intersections in one file
 
   //STEP 3: ROAD SEGMENT EDGES
-  //for our use: we used inputfile3 = "../data/roadEdgeData.dat"
-  myfile.open(inputfile3);
+  //for our use: we used roadEdgeFile = "../data/roadEdgeData.dat"
+  myfile.open("../data/"+ roadEdgeFile);
   outVec.clear();
 
  //use prevEdge to ensure no duplicate edges
