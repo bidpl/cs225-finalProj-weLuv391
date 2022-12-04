@@ -1,6 +1,8 @@
-#include "graph.h"
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
+#include "graph.h"
+#include "dsets.h"
 
 Graph::Node::Node() : 
     ID(-1) {}
@@ -122,6 +124,10 @@ bool Graph::insertEdge(int routeID, int IDa, int IDb, double distance, int route
     return true;
 }
 
+void Graph::push_backEdge(const Edge & edge) {
+    edgeList.push_back(edge);
+}
+
 //do we need this as a parameter as it's already Graph's private variable?
 double Graph::getTravelTime(int edgeID, const std::vector<double> & speedLookup) {
     if(edgeID < 0 || edgeID >= (int) edgeList.size()) {
@@ -208,3 +214,37 @@ bool Graph::Iterator::operator!=(const Iterator &other) {
     return current_ != other.current_;
 }
 
+Graph Graph::generateMST(std::vector<Edge> & outList) {
+    DisjointSets connectedSets;
+
+    // Setup n = |V| buckets for Kruskals - O(n)
+    connectedSets.addelements(nodes.size());
+
+    // Make sorted copy of m = |E| edges - O(m + mlogm) = O(mlogm)
+    std::vector<Edge> sortedEdges = edgeList;
+    std::sort(sortedEdges.begin(), sortedEdges.end());
+
+    // Copy nodes over to a new mstGraph
+    Graph mstGraph;
+    for(int i = 0; i < (int) nodes.size(); ++i) {
+        mstGraph.insertNode(i, nodes[i].coords);
+    }
+
+    // Check edges in ascending order until all nodes are connectd or you run out of edges
+    for(int i = 0; i < (int) sortedEdges.size() && connectedSets.size(0) < (int) nodes.size(); ++i) {
+        const Edge & currEdge = sortedEdges[i];
+
+        // Add them if they connect two unconnected nodes
+        if(connectedSets.find(currEdge.end1) != connectedSets.find(currEdge.end2)) {
+            connectedSets.setunion(currEdge.end1, currEdge.end2);
+            mstGraph.push_backEdge(currEdge);
+
+            // Add to adj list
+            mstGraph.nodes[currEdge.end1].adjList.push_back(mstGraph.edgeList.size() - 1);
+            mstGraph.nodes[currEdge.end2].adjList.push_back(mstGraph.edgeList.size() - 1);
+        }
+    }
+
+    outList = mstGraph.edgeList;
+    return mstGraph;
+}

@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include "graph.h"
+#include "dsets.h"
 
 TEST_CASE("practiceTest", "[weight=1][part=1]") {
   int i = 0;
@@ -188,4 +189,81 @@ TEST_CASE("Basic BFS iteration", "[part=bfs]") {
   }
 
   REQUIRE(visitOrder == ans);
+}
+
+TEST_CASE("DisjointSets throws std::out_of_range if query empty dset", "[part=dsets]") {
+  DisjointSets emptySet;
+
+  try {
+    emptySet.find(0);
+    REQUIRE(false);
+  } catch(std::out_of_range) {
+    REQUIRE(true);
+  }
+}
+
+TEST_CASE("Basic DisjointSets test", "[part=dsets]") {
+  DisjointSets dset;
+
+  // Add NUM_ELEM elems to disjoint set
+  const int NUM_ELEM = 5;
+  dset.addelements(NUM_ELEM);
+
+  // Make sure each bucket is size 1 and has the correct label
+  for(int i = 0; i < NUM_ELEM; ++i) {
+    REQUIRE(dset.find(i) == i);
+    REQUIRE(dset.size(i) == 1);
+  }
+
+  dset.setunion(0, 1);
+  dset.setunion(2, 3);
+  
+  REQUIRE(dset.find(0) == dset.find(1));
+  REQUIRE(dset.find(2) == dset.find(3));
+  REQUIRE(dset.size(0) == 2);
+  REQUIRE(dset.size(2) == 2);
+
+  dset.setunion(1, 2);
+
+  REQUIRE(dset.find(0) == dset.find(3));
+  REQUIRE(dset.size(2) == 4);
+
+  REQUIRE(dset.find(4) == 4);
+  REQUIRE(dset.size(4) == 1);
+}
+
+// Taken from lecture
+TEST_CASE("Lecture Kruskal Test Case", "[part=MST]") {
+  Graph testGraph;
+
+  for(int i = 0; i < 8; ++i) {
+    testGraph.insertNode(i, std::pair<double, double>());
+  }
+
+  testGraph.insertEdge(0, 0, 1, 5, 0);
+  testGraph.insertEdge(1, 0, 3, 2, 0);
+  testGraph.insertEdge(2, 0, 5, 16, 0);
+  testGraph.insertEdge(3, 1, 2, 15, 0);
+  testGraph.insertEdge(4, 1, 3, 5, 0);
+  testGraph.insertEdge(5, 2, 5, 12, 0);
+  testGraph.insertEdge(6, 2, 3, 16, 0);
+  testGraph.insertEdge(7, 2, 4, 10, 0);
+  testGraph.insertEdge(8, 2, 7, 11, 0);
+  testGraph.insertEdge(9, 3, 5, 17, 0);
+  testGraph.insertEdge(10, 3, 4, 13, 0);
+  testGraph.insertEdge(11, 4, 5, 12, 0);
+  testGraph.insertEdge(12, 4, 6, 8, 0);
+  testGraph.insertEdge(13, 4, 7, 2, 0);
+  testGraph.insertEdge(14, 5, 6, 4, 0);
+  testGraph.insertEdge(15, 6, 7, 9, 0);
+
+  std::vector<Graph::Edge> mstEdgeList;
+  Graph mst = testGraph.generateMST(mstEdgeList);
+
+  REQUIRE(mstEdgeList.size() == 7);
+  
+  int edgeWeights[] = {2, 2, 4, 5, 8, 10, 13};
+  for(unsigned i = 0; i < 7; ++i) {
+    REQUIRE(edgeWeights[i] == mstEdgeList[i].distance);
+  }
 }
