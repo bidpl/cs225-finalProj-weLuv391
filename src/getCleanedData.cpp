@@ -8,7 +8,7 @@ Sanitizer::Sanitizer(){
   nodeCount = 0;
   edgeCount = 0;
 }
-void Sanitizer::getCleanedData(std::string inputfile1, std::string inputfile1, std::string inputfile1){
+void Sanitizer::getCleanedData(std::string inputfile1, std::string inputfile2, std::string inputfile3){
   
   string line;            // used to read/store comma-separated or blankspace-separated strings
   ifstream myfile;        // original data files we open
