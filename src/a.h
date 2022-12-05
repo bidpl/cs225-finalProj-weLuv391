@@ -6,6 +6,16 @@
 #include "./lib/cs225/kdtree.h"
 
 /**
+ * @brief Data structure used to store nodes, their parents, and their F-values.
+ * Useful for retrieving the final path using backtracking.
+ */
+struct Cell {
+    Graph::Node currnode;
+    Cell* parent;
+    double F;
+}
+
+/**
  * @brief Given a pair of any starting lat/long coords and the desired end coords, 
  * function uses A* algorithm on the given graph in order to find the shortest path 
  * between these coords.
@@ -41,6 +51,26 @@ Graph::Node nearestNode(KDTree<2> kd, std::pair<double, double> coords);
  * @param potential Graph node currently being processed that could potentially be a 
  * part of the path.
  * @param dest Graph node that we're trying to reach.
- * @return F-score for potential next node
+ * @return F-score for potential next node.
  */
 double calculateF(const Graph& graph, Graph::Edge edge, Graph::Node potential, Graph::Node dest);
+
+/**
+ * @brief Helper function for shortestPath. Given a vector of Cells find the index of cell
+ * of the lowest F value in the vector.
+ *
+ * @param cells Vector containing Cells.
+ * @return Index of cell with lowest F.
+ */
+unsigned int getMinFCell(std::vector<Cell> cells);
+
+
+/**
+ * @brief Helper function for shortestPath. Given a vector of cells and a cell with certain node,
+ * finds the index of cell with same node as currnode or -1 if the node doesn't exist in the vector.
+ *
+ * @param cells Vector containing cells to search through
+ * @param cell Cell to find in cells
+ * @return Index of cell to find or -1 if cell doesn't exist 
+ */
+int getCellIdx(std::vector<Graph::Node> cells, Graph::Node cell);
