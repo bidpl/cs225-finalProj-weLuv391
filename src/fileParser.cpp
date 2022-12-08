@@ -1,8 +1,9 @@
 #include "graph.h"
 #include "fileParser.h"
-#include "cs225/kdtree.h"
+#include "kdtree.h"
 #include <fstream>
 #include <string>
+
 using namespace std;
 fullGraph::fullGraph(const vector< string> listofFiles, Graph& fullG_){
     
