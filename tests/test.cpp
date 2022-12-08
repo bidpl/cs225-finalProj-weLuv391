@@ -11,7 +11,7 @@ TEST_CASE("practiceTest", "[weight=1][part=1]") {
 }
 
 TEST_CASE("KDTree Test", "[weight=infinity][part=sanitizer]") {
-  int airCount, connectingCount;
+    int airCount, connectingCount;
   Sanitizer files;
   files.getCleanedData("roadIntersections.dat", "airports.dat", "roadEdgeData.dat");
   airCount = files.getNodeCount(1);
@@ -20,10 +20,41 @@ TEST_CASE("KDTree Test", "[weight=infinity][part=sanitizer]") {
   REQUIRE( airCount == connectingCount );
 }
 
-TEST_CASE("Small Data Sanitize Test", "[weight=1][part=sanitizer]") {
-  int i = 0;
 
-  REQUIRE( i == 0 );
+TEST_CASE("Small Data Sanitize Test with Edge Data Correction", "[weight=1][part=sanitizer]") {
+  int interCount, airCount, roadCount, planeCount, connectingCount;
+  Sanitizer files;
+  files.getCleanedData("smallRoadIntersections.dat", "smallAirports.dat", "smallRoadEdges.dat");
+
+  interCount = files.getNodeCount(0);
+  airCount = files.getNodeCount(1);
+  roadCount = files.getEdgeCount(0);
+  planeCount = files.getEdgeCount(1);
+  connectingCount = files.getEdgeCount(2);
+
+  REQUIRE( interCount == 3 );
+  REQUIRE( airCount == 2 );
+  REQUIRE( roadCount == 2 );
+  REQUIRE( planeCount == 1 );
+  REQUIRE( connectingCount == 2 );
+}
+
+TEST_CASE("Medium Data Sanitize Test with Edge and Node Data Correction", "[weight=1][part=sanitizer]") {
+  int interCount, airCount, roadCount, planeCount, connectingCount;
+  Sanitizer files;
+  files.getCleanedData("mediumRoadIntersections.dat", "mediumAirports.dat", "mediumRoadEdges.dat");
+
+  interCount = files.getNodeCount(0);
+  airCount = files.getNodeCount(1);
+  roadCount = files.getEdgeCount(0);
+  planeCount = files.getEdgeCount(1);
+  connectingCount = files.getEdgeCount(2);
+
+  REQUIRE( interCount == 17 );
+  REQUIRE( airCount == 4 );
+  REQUIRE( roadCount == 13 );
+  REQUIRE( planeCount == 6 );
+  REQUIRE( connectingCount == 4 );
 }
 
 //Test on invalid edges: we should skip self loops and duplicate edges between the same two nodes

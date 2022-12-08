@@ -174,6 +174,7 @@ void Sanitizer::getCleanedData(std::string intersectionFile, std::string airport
 
  //use prevEdge to ensure no duplicate edges
   string prevEdge = "";
+  int ID = 0;
   while(getline(myfile, line)) {
       stringstream ss(line);
       lineVec.clear();
@@ -190,8 +191,9 @@ void Sanitizer::getCleanedData(std::string intersectionFile, std::string airport
         //since edges are always arranged such that startNodeID < endNodeID, and progress as startNodeID increase
         //we only need to check whether two adjacent edges share the same [start,end] pair
         if(lineVec[1]+lineVec[2] != prevEdge){
-          outVec.push_back(lineVec[0]+", 0, "+ lineVec[1] +", "+ lineVec[2] + ", " +lineVec[3]);
+          outVec.push_back(to_string(ID)+", 0, "+ lineVec[1] +", "+ lineVec[2] + ", " +lineVec[3]);
           edgeCount++;
+          ID++;
           prevEdge = lineVec[1]+lineVec[2];
         }
       }
