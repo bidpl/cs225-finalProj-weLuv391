@@ -24,12 +24,12 @@ In the terminal run these commands to set up: "mkdir build", "cd build", "cmake 
 
 __Data File Format__:<br>
 Location: *finalProj-weLuv391/data* <br>
-All of our input data is stored at *finalProj-weLuv391/data*; thus if the user wishes to add their own data, they must add it in the data folder in a .dat format where file1 has all Nodes of type 1, file2 has all Nodes of type 2, and file3 has all the Edges of type1. The user must then run "./dataCleanup" from the build file which will ask for an input in the specific order of Node Type 1, Node Type 2, and Edge Type 1. It will then create a nodes.txt and edges.txt with all the valid nodes and edges and add them to entry.
+All of our input data is stored at *finalProj-weLuv391/data*; thus if the user wishes to add their own data, they must add it in the data folder in a .dat format where file1 has all Nodes of type 1, file2 has all Nodes of type 2, and file3 has all the Edges of type1. The user must then run "./main" from the build file which will ask for an input in the specific order of Node Type 1, Node Type 2, and Edge Type 1. It will then create a nodes.txt and edges.txt with all the valid nodes and edges and add them to entry.
 
 
 __Running the code__:<br>
 Location: *finalProj-weLuv391/entry/main.cpp*, *finalProj-weLuv391/entry/dataCleanup.cpp* <br>
-In order to run main.cpp, the user must first input their desired files in dataCleanup.cpp (if this is not done an error message will be presented asking the user to run dataCleanup). This can be done by running "./dataCleanup" in the build folder which will ask the user to input their data files and create a nodes.txt and edges.txt placed in entry with all the valid nodes/edges to be used for the graph. Now simply run "./main" within the build folder. This will then run main.cpp which will create a graph using all the nodes and edges found the created txt files. It will then prompt the user to input two points and it will return the path connecting the two nodes with the minimum weight.
+In order to run main.cpp, the user must first input their desired files in /data (if this is not done the program will not be able to find the files). Next, run "./main" in the build folder which will ask the user to input their data files and create a nodes.txt and edges.txt placed in entry with all the valid nodes/edges to be used for the graph. It will then create a graph using all the nodes and edges found the created txt files. It will then prompt the user to input two points and the location of where the user wishes the output to be stored and it will return the path connecting the two nodes with the minimum weight at the given file output location.
 
 __Running the test cases__:<br>
 Location: *finalProj-weLuv391/tests/test.cpp* <br>
