@@ -179,7 +179,15 @@ class Graph {
             return edgeList;
         }
 
+        const std::vector<Edge> & getEdgeList() const {
+            return edgeList;
+        }
+
         std::vector<Node> & getNodes() {
+            return nodes;
+        }
+
+        const std::vector<Node> & getNodes() const {
             return nodes;
         }
 
