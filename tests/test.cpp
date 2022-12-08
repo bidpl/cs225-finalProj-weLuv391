@@ -1,12 +1,96 @@
 #include <catch2/catch_test_macros.hpp>
+#include "getCleanedData.h"
 #include "graph.h"
 #include "dsets.h"
 #include "fileParser.h"
+
 
 TEST_CASE("practiceTest", "[weight=1][part=1]") {
   int i = 0;
 
   REQUIRE( i == 0 );
+}
+
+TEST_CASE("KDTree Test", "[weight=infinity][part=sanitizer]") {
+    int airCount, connectingCount;
+  Sanitizer files;
+  files.getCleanedData("roadIntersections.dat", "airports.dat", "roadEdgeData.dat");
+  airCount = files.getNodeCount(1);
+  connectingCount = files.getEdgeCount(2);
+
+  REQUIRE( airCount == connectingCount );
+}
+
+
+TEST_CASE("Small Data Sanitize Test with Edge Data Correction", "[weight=1][part=sanitizer]") {
+  int interCount, airCount, roadCount, planeCount, connectingCount;
+  Sanitizer files;
+  files.getCleanedData("smallRoadIntersections.dat", "smallAirports.dat", "smallRoadEdges.dat");
+
+  interCount = files.getNodeCount(0);
+  airCount = files.getNodeCount(1);
+  roadCount = files.getEdgeCount(0);
+  planeCount = files.getEdgeCount(1);
+  connectingCount = files.getEdgeCount(2);
+
+  REQUIRE( interCount == 3 );
+  REQUIRE( airCount == 2 );
+  REQUIRE( roadCount == 2 );
+  REQUIRE( planeCount == 1 );
+  REQUIRE( connectingCount == 2 );
+}
+
+TEST_CASE("Medium Data Sanitize Test with Edge and Node Data Correction", "[weight=1][part=sanitizer]") {
+  int interCount, airCount, roadCount, planeCount, connectingCount;
+  Sanitizer files;
+  files.getCleanedData("mediumRoadIntersections.dat", "mediumAirports.dat", "mediumRoadEdges.dat");
+
+  interCount = files.getNodeCount(0);
+  airCount = files.getNodeCount(1);
+  roadCount = files.getEdgeCount(0);
+  planeCount = files.getEdgeCount(1);
+  connectingCount = files.getEdgeCount(2);
+
+  REQUIRE( interCount == 17 );
+  REQUIRE( airCount == 4 );
+  REQUIRE( roadCount == 13 );
+  REQUIRE( planeCount == 6 );
+  REQUIRE( connectingCount == 4 );
+}
+
+//Test on invalid edges: we should skip self loops and duplicate edges between the same two nodes
+TEST_CASE("Data Sanitize - Invalid Data Test ", "[part=sanitizer]") {
+  int airCount, flightsCount, edgeCount;
+  Sanitizer files;
+  files.getCleanedData("roadIntersectionsTest.dat", "airportsTest.dat", "roadEdgeTest.dat");
+
+  airCount = files.getNodeCount(1);
+  flightsCount = files.getEdgeCount(1);
+  edgeCount = files.getEdgeCount(0);
+
+  //within these test data files, there are 3 valid airports, therefore 3 connecting flights (3 choose 2)
+  REQUIRE( airCount == 3 );
+  REQUIRE( flightsCount == 3 );
+
+  //there are 5 edges, 2 are invalid (one connects to itself, the other is a duplicate edge between same 2 nodes)
+  REQUIRE( edgeCount == 3);
+
+}
+
+//With a larger dataset, we test to make sure that correct number of valid airports are included
+//Test to make sure that there is indeed one flight connecting each pair of airports
+TEST_CASE("Data Sanitize - Flights Large", "[part=sanitizer]") {
+  int airCount, flightsCount;
+  Sanitizer files;
+  files.getCleanedData("roadIntersections.dat", "airports.dat", "roadEdge.dat");
+
+  airCount = files.getNodeCount(1);
+  flightsCount = files.getEdgeCount(1);
+
+  //within these test data files, there are 29 valid airports, therefore 406 connecting flights (29 choose 2)
+  REQUIRE( airCount == 29 );
+  REQUIRE( flightsCount ==  406);
+
 }
 
 TEST_CASE("small edges/test inserted", "[weight=1][part=input_reader]") {

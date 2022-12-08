@@ -132,7 +132,7 @@ KDTree<Dim>::KDTree(const vector<Point<Dim>>& newPoints)
 
     vector<Point<Dim>> temp = newPoints; // creates a new temp vector/ and gets it median index
     int index = (temp.size()-1)/2;
-
+    size = temp.size();
     if(!temp.empty()){ // if the vector is not empty then organize it and create the tree
       dimensionSort(temp, 0, temp.size()-1, index, 0); // sort our vector
       root = createNode(temp, 0, temp.size()-1); // creates a kd tree and sets the root to it,.
