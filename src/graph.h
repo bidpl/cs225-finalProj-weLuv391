@@ -89,6 +89,13 @@ class Graph {
         bool insertEdge(int routeID, int IDa, int IDb, double distance, int routeType);
 
         /**
+         * @brief appends an edge to the end of edge list without checking index to ID
+         * 
+         * @param edge - edge to copy and pushback
+         */
+        void push_backEdge(const Edge & edge);
+
+        /**
          * @brief Get speed of an edge based on routeID + speed lookup
          * 
          * @param edgeID
@@ -127,6 +134,17 @@ class Graph {
         Iterator end();
         Iterator iterAt(int startIdx);
 
+        /**
+         * @brief generates a MST of a graph using Kruskal's alg
+         * 
+         * @param const Graph & graph - reference to target graph, must be properly formatted
+         * @param std::vector<Edge> & outList - where to output edgeList
+         * 
+         * @returns Graph - graph object representing MST (new nodes to show MST adjacency lists)
+         * 
+         */
+
+        Graph generateMST(std::vector<Edge> & outList);
         /**
          * @brief converts distance in degrees (what's given in edge) to miles
          * 
