@@ -1,5 +1,5 @@
 #include "getCleanedData.h"
-#include "cs225/kdtree.h"
+#include "kdtree.h"
 using namespace std;
 //TOTALS: 406 flights, 29 airports
 //      21692 road segments, 21407 intersections

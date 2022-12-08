@@ -104,7 +104,6 @@ Hold a weekly	meeting to check-in on each others’ progress, help each other ou
 Week 3 (Nov 13 - Nov 19): 
 write and test algorithms and functions
 Present what we have for these functions and datasets to our advisor for mid-project deliverable
-Mid-Project Dues: Nov 14-18th
 
 Week 4 (Nov 19 - Nov 26) Thanksgiving Break: 
 
