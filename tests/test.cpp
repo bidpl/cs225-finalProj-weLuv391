@@ -26,6 +26,7 @@ TEST_CASE("Small Data Sanitize Test", "[weight=1][part=sanitizer]") {
   REQUIRE( i == 0 );
 }
 
+//Test on invalid edges: we should skip self loops and duplicate edges between the same two nodes
 TEST_CASE("Data Sanitize - Invalid Data Test ", "[part=sanitizer]") {
   int airCount, flightsCount, edgeCount;
   Sanitizer files;
@@ -44,7 +45,9 @@ TEST_CASE("Data Sanitize - Invalid Data Test ", "[part=sanitizer]") {
 
 }
 
-TEST_CASE("Data Sanitize - Flights Actual Large", "[part=sanitizer]") {
+//With a larger dataset, we test to make sure that correct number of valid airports are included
+//Test to make sure that there is indeed one flight connecting each pair of airports
+TEST_CASE("Data Sanitize - Flights Large", "[part=sanitizer]") {
   int airCount, flightsCount;
   Sanitizer files;
   files.getCleanedData("roadIntersections.dat", "airports.dat", "roadEdge.dat");
