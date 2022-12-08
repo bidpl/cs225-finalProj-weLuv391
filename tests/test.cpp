@@ -148,7 +148,7 @@ TEST_CASE("Multiple Edges Insert", "[part=1]") {
   REQUIRE(!(testGraph.insertEdge(6, 2, 4, 0, 0)));
 }
 
-TEST_CASE("Get Travel Time", "[part=1]") {
+TEST_CASE("Get Travel Speed", "[part=1]") {
   Graph testGraph;
 
   for(int i = 0; i < 5; ++i) {
@@ -162,32 +162,33 @@ TEST_CASE("Get Travel Time", "[part=1]") {
   testGraph.insertEdge(4, 4, 2, 0, 3);
   testGraph.insertEdge(5, 3, 4, 0, 4);
 
-  std::vector<double> speeds{21, 12, 69, 420};
+  std::vector<double> speeds = {21, 12, 69, 420};
+  testGraph.setSpeedLookup(speeds);
 
   //if edgeID is invalid, throws exception
   try {
-    testGraph.getTravelTime(6, speeds);
+    testGraph.getTravelSpeed(6);
     REQUIRE(false);
   } catch (...) { REQUIRE(true); }
   try {
-    testGraph.getTravelTime(-1, speeds);
+    testGraph.getTravelSpeed(-1);
     REQUIRE(false);
   } catch (...) { REQUIRE(true); }
 
   //if route type doesn't exist, throws exception
   try {
-    testGraph.getTravelTime(5, speeds);
+    testGraph.getTravelSpeed(5);
     REQUIRE(false);
   } catch (...) { REQUIRE(true); }
 
   //if routeType is -1, return default speed
-  REQUIRE(testGraph.getTravelTime(0, speeds) == 1.0);
+  REQUIRE(testGraph.getTravelSpeed(0) == 1.0);
 
   //checks if route type corresponds to correct speed
-  REQUIRE(testGraph.getTravelTime(1, speeds) == 21);
-  REQUIRE(testGraph.getTravelTime(2, speeds) == 12);
-  REQUIRE(testGraph.getTravelTime(3, speeds) == 69);
-  REQUIRE(testGraph.getTravelTime(4, speeds) == 420);
+  REQUIRE(testGraph.getTravelSpeed(1) == 21);
+  REQUIRE(testGraph.getTravelSpeed(2) == 12);
+  REQUIRE(testGraph.getTravelSpeed(3) == 69);
+  REQUIRE(testGraph.getTravelSpeed(4) == 420);
 }
 
 TEST_CASE("Basic BFS iteration", "[part=bfs]") {

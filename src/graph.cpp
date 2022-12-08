@@ -1,8 +1,11 @@
 #include <stdexcept>
 #include <iostream>
 #include <algorithm>
+#include <map>
+#include <cmath>
 #include "graph.h"
 #include "dsets.h"
+#include "kdtree.h"
 
 Graph::Node::Node() : 
     ID(-1) {}
@@ -128,10 +131,9 @@ void Graph::push_backEdge(const Edge & edge) {
     edgeList.push_back(edge);
 }
 
-//do we need this as a parameter as it's already Graph's private variable?
-double Graph::getTravelTime(int edgeID, const std::vector<double> & speedLookup) {
+double Graph::getTravelSpeed(int edgeID) const {
     if(edgeID < 0 || edgeID >= (int) edgeList.size()) {
-        throw std::runtime_error("Graph::getTravelTime: invalid edgeID " + std::to_string(edgeID));
+        throw std::out_of_range("Graph::getTravelTime: invalid edgeID " + std::to_string(edgeID));
     }
     
     const double DEFAULT_SPEED = 1.0;
@@ -148,6 +150,22 @@ double Graph::getTravelTime(int edgeID, const std::vector<double> & speedLookup)
     }
 
     return speedLookup[routeType];
+}
+
+double Graph::getTravelTime(int edgeID) const {
+    if(edgeID < 0 || edgeID >= (int) edgeList.size()) {
+        throw std::out_of_range("Graph::getTravelTime: invalid edgeID " + std::to_string(edgeID));
+    }
+
+    return degToLinear(edgeList[edgeID].distance)/getTravelSpeed(edgeID);
+}
+
+double Graph::degToLinear(double degDistance) const {
+    return degDistance * LINEAR_CONV_FACTOR;
+}
+
+double Graph::coordDistance(std::pair<double, double> coord1, std::pair<double, double> coord2) const {
+    return degToLinear(sqrt( pow(coord1.first - coord2.first, 2) + pow(coord1.second - coord2.second, 2) ));
 }
 
 Graph::Iterator::Iterator() : current_(Node()) {}
@@ -247,4 +265,16 @@ Graph Graph::generateMST(std::vector<Edge> & outList) {
 
     outList = mstGraph.edgeList;
     return mstGraph;
+}
+int Graph::getNearestNode(std::pair<double, double> loc) const {
+    std::map<std::pair <double, double>, int> coorToID;
+    std::vector<Point<2>> coordinateVector; // a vector of points that match to our coordinates but in 
+    for(const Node & node : nodes) { // loop through the amount of Nodes in our 1st data type
+        coordinateVector.push_back(Point<2>(node.coords.first, node.coords.second)); // converts our pair vector to that of Points  to use in the KD tree
+        coorToID[std::pair<double,double>(node.coords.first, node.coords.second)] = node.ID;
+    }
+    KDTree<2> coordsTree (coordinateVector); // creates a KDTree out of the coordinates of our first
+    Point<2> closestCoordinate2 = coordsTree.findNearestNeighbor(Point<2>(loc.first, loc.second));
+    std::pair <double, double> mapLookup (closestCoordinate2[0],closestCoordinate2[1]);
+    return coorToID[mapLookup]; //get the ID of the corresponding coordinates
 }
