@@ -3,25 +3,24 @@
 #include "graph.h"
 #include "fileParser.h"
 
-// TEST_CASE("practiceTest", "[weight=infinity][part=sanitizer]") {
-//   int roadCount, interCount, airCount, planeCount, connectingCount;
-//   Sanitizer files;
-//   files.getCleanedData();
-//   interCount = files.getNodeCount(0);
-//   airCount = files.getNodeCount(1);
-//   roadCount = files.getEdgeCount(0);
-//   planeCount = files.getEdgeCount(1);
-//   connectingCount = files.getEdgeCount(2);
 
-//   REQUIRE( roadCount == 21693 );
-//   REQUIRE( interCount == 21048 );
-//   REQUIRE( airCount == 29 );
-//   REQUIRE( planeCount == 406 );
-//   REQUIRE( connectingCount == 29 );
-// }
-
-#include "graph.h"
 TEST_CASE("practiceTest", "[weight=1][part=1]") {
+  int i = 0;
+
+  REQUIRE( i == 0 );
+}
+
+TEST_CASE("KDTree Test", "[weight=infinity][part=sanitizer]") {
+  int airCount, connectingCount;
+  Sanitizer files;
+  files.getCleanedData("roadIntersections.dat", "airports.dat", "roadEdgeData.dat");
+  airCount = files.getNodeCount(1);
+  connectingCount = files.getEdgeCount(2);
+
+  REQUIRE( airCount == connectingCount );
+}
+
+TEST_CASE("Small Data Sanitize Test", "[weight=1][part=sanitizer]") {
   int i = 0;
 
   REQUIRE( i == 0 );
