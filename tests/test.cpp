@@ -26,6 +26,38 @@ TEST_CASE("Small Data Sanitize Test", "[weight=1][part=sanitizer]") {
   REQUIRE( i == 0 );
 }
 
+TEST_CASE("Data Sanitize - Invalid Data Test ", "[part=sanitizer]") {
+  int airCount, flightsCount, edgeCount;
+  Sanitizer files;
+  files.getCleanedData("roadIntersectionsTest.dat", "airportsTest.dat", "roadEdgeTest.dat");
+
+  airCount = files.getNodeCount(1);
+  flightsCount = files.getEdgeCount(1);
+  edgeCount = files.getEdgeCount(0);
+
+  //within these test data files, there are 3 valid airports, therefore 3 connecting flights (3 choose 2)
+  REQUIRE( airCount == 3 );
+  REQUIRE( flightsCount == 3 );
+
+  //there are 5 edges, 2 are invalid (one connects to itself, the other is a duplicate edge between same 2 nodes)
+  REQUIRE( edgeCount == 3);
+
+}
+
+TEST_CASE("Data Sanitize - Flights Actual Large", "[part=sanitizer]") {
+  int airCount, flightsCount;
+  Sanitizer files;
+  files.getCleanedData("roadIntersections.dat", "airports.dat", "roadEdge.dat");
+
+  airCount = files.getNodeCount(1);
+  flightsCount = files.getEdgeCount(1);
+
+  //within these test data files, there are 29 valid airports, therefore 406 connecting flights (29 choose 2)
+  REQUIRE( airCount == 29 );
+  REQUIRE( flightsCount ==  406);
+
+}
+
 TEST_CASE("small edges/test inserted", "[weight=1][part=input_reader]") {
   std::vector<std::string> fileList;
   Graph fullG_;
