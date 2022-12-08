@@ -16,6 +16,7 @@ class fullGraph{
     * It will also construct a KD-tree of the longitude/latitude points to be used in connectGraphs();
     * 
     * @param listofFiles a vector that holds all of ur files where its stored as the nodes1, edges1, nodes2, edges2, ....
+    * @param fullG_ the Graph to be used to insert all the nodes, edges
     */
     fullGraph(const std::vector<std::string> listofFiles, Graph& fullG_);
 
@@ -24,15 +25,16 @@ class fullGraph{
     * It will return the amount of element that was inserted. If the return value is -1, then no items were inserted
     * 
     * @param nodefile the file name that holds the data for our nodes
+    * @param fullG_ the Graph to be used to insert all the nodes
     */
     int insertAllNodes(const std::string& nodefile, Graph& fullG_);
 
     /*
-    * @brief will be used by the constructor, it will take in a file with all the Edges and insert them all in the graph with the proper weidght.
+    * @brief will be used by the constructor, it will take in a file with all the Edges and insert them all in the graph with the proper weidht.
     * It will return the amoutnt of element that was inserted. If the return value is -1, then no items were inserted
     * 
     * @param edgefile the file name that holds the data for our edges
-    * @param needMap a boolean that keeps track if we need to map each longitude/latitude to an ID for later use in the kd tree
+    * @param fullG_ the Graph to be used to insert all the edges
     */
     int insertAllEdges(const std::string& edgefile, Graph& fullG_);
 
@@ -52,6 +54,7 @@ class fullGraph{
 
 
     private:
+        //private variables that hold the amount of nodes and edges that were inserted.
         int nodesInserted;
         int edgesInserted;
 
