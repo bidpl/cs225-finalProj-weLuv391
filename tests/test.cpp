@@ -58,6 +58,18 @@ TEST_CASE("Medium Data Sanitize Test with Edge and Node Data Correction", "[weig
   REQUIRE( connectingCount == 4 );
 }
 
+//Test on invalid nodes: omit nodes clearly outside of California boundary 
+TEST_CASE("Data Sanitize - Node Checker", "[part=sanitizer]") {
+  int nodeCount;
+  Sanitizer files;
+  files.getCleanedData("roadIntersectionsTest.dat", "airportsTest.dat", "roadEdgeTest.dat");
+  nodeCount = files.getNodeCount(0);
+
+
+  //with 5 total nodes and 2 invalid nodes in this test data file, we should get 3
+  REQUIRE( nodeCount == 3 );
+}
+
 //Test on invalid edges: we should skip self loops and duplicate edges between the same two nodes
 TEST_CASE("Data Sanitize - Invalid Data Test ", "[part=sanitizer]") {
   int airCount, flightsCount, edgeCount;
