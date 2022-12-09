@@ -22,12 +22,17 @@ int main(int argc, char *argv[]) {
     std::cout << "Num nodes: " << network.getNodes().size() << std::endl;
     std::cout << "Num edges: " << network.getEdgeList().size() << std::endl;
 
-    unsigned counter = 0;
+    std::vector<int> visitOrder;
     for(Graph::Iterator it = network.begin(); it != network.end(); ++it) {
-        ++counter;
+        visitOrder.push_back((*it).ID);
     }
 
-    std::cout << counter << std::endl;
+    std::cout << "BFS iterator visits " << visitOrder.size() << " nodes" << std::endl;
+
+    std::cout << "First 20 items in BFS iteration: " <<std::endl;
+    for(unsigned i = 0; i < 20; ++i) {
+        std::cout << network.getNodes()[visitOrder[i]].coords.second << "," << network.getNodes()[visitOrder[i]].coords.first << std::endl;
+    }
 
     // Golden Gate S Vista Point to Santa Monica Pier
     // std::vector<Graph::Edge> pathEdges = shortestPath(network, std::pair<double, double>{37.807680, -122.474735}, std::pair<double, double>{37.807680, -122.474735});
