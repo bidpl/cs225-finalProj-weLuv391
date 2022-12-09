@@ -1,0 +1,42 @@
+Shiv Gohil, Binh Minh Nguyen, Nuoyan Wang, Andrew Zhao<br>
+Carl Evans, Brad Solomon, Thierry Ramais<br>
+CS 225<br>
+12 December 2022<br>
+# CS225 Final Project Report <br>
+## Introduction <br>
+Throughout the process of this project, we aimed to answer the fundamental question: Using a dataset of road intersections and edges and a dataset of airport locations, how can we best implement a “Shortest-Route Finder” using a graph data structure and algorithms? Ultimately, we represented intersections and airports as nodes in our graph, with road connections and air flights as the edges. Moreover, having decided on using California as our map area, we needed to complete the following stages: data cleaning and parsing, a graph implementation, as well as graph algorithms (BFS, Kruskal’s and A-star). 
+## Data Cleaning: (getCleanedData.cpp)
+First, we need to retrieve the data from our online datasets, and convert its format in the following way, keeping the pertinent information for our routeFinder application: 
+
+>Nodes: (NodeID, transportType[0=road, 1=flight], name, longitude, latitude)<br>
+>Edges: (EdgeID, transportType[0=road, 1=flight], startID, endID, direct-distance)
+
+In this manner, we can later create weighted edges, where the weight is determined by distance multiplied by different factors for air and ground travel. Here, distance is the euclidean distance between two points, measured in units of “degrees of longitude-latitude.” We later omit the curvature of the Earth when converting from these degrees into units of miles or km as the distances between California are small enough that the curvature is small. <br>
+
+Having decided on this format, we begin data cleaning within the “getCleanedData.cpp” file. Our function takes input filenames for the 3 datasets containing the California intersections, California road edges, and the World airports. For each of these three datasets, we iterate through the .dat file line by line, separating each line into vectors of strings depending on the comma-separated or space-separated nature of the original data file. As we iterate through, we need to omit erroneous data, such as duplicating edges, self-looping edges, as well as all non-commercial and non-California airports. The data we want within each individual line-by-line vector is then selected and output into output nodes.txt and edges.txt files, according to the formats in bold above. <br>
+
+Now, our output nodes.txt file contains the road intersection and airport nodes, while our edges.txt file contains the road edges between select intersections. We still need to create flight edges between airports. To do this, we make the assumption that each of our selected airports has a flight to-and-from every other airport. We want to append these flights as edges in our output edges.txt files. To accomplish this, we need to add a portion of code within the airport data cleaning, allowing us to store a vector of just the airport nodes we want. Then, we simply use a nested for loop to create edges between every pair of airports, which are then appended to our edges.txt file as strings on each line.<br>
+
+>Input and Output Text format visualized:<br>
+![Input and Output Text format visualized](resultImages/sanitize_IO.png)
+
+### KDTree:
+In the final step of data cleaning, we want to append new road edges from each airport to the nearest intersection. In doing so, we complete our integration between the road network and the airport network, which allows us to seamlessly transition from driving to getting to an airport and taking a flight and vice versa. The best method that we figured out how to  accomplish our goals was by using the Kd-Tree that we created before in the “mp_mosiacs” assignment as we had already completed the findNearestNeighbor() function in said assignment. <br>
+
+In our project, we made the entire process of finding and then creating these edges a separate function called connectGraphs() which takes in the index of the last edge created as an integer variable called currIdx and returns a vector of strings. This section of the code simply creates a vector of Points using the longitude and latitude of every intersection node and maps that Point to its node ID. We then call the Kd-tree constructor on that vector and loop through every single airport node; we can then use the longitude and latitude of the airport nodes to call findNearestNeighbor() and feed the result into our map. This returns us the ID of the closest intersection to said airport which can then be used to create an edge between the intersection and current airport with, ID = currIdx+1 type= 0 and weight=0 . The reason our weight is 0 is because the exact length is unknown, but should be small enough that is negligible and thus can be represented as a 0. This edge is then inserted into a vector of strings and currIdx is incremented for the next edge. When the loop completes, it simply returns the vector of all the edges to be used by the rest of the code which appends it to edges.txt. <br>
+
+This current method is rather accurate, an example is shown below to prove this where allPoints is the airport location and mapLookup is the closest intersection with the points plotted on google maps:
+
+>Airport to Closest Intersection Coordinates on Google Maps<br>
+![Airport to Closest Intersection](resultImages/kdtree.png)
+![Airport to Closest Intersection](resultImages/googleMaps.png)<br>
+
+### Testing:
+To test functionality for Data Cleaning, we implemented five test cases. The first test case just measures if the program created an edge from every airport to an intersection using the Kd-tree. The next two test cases are simple insertion cases of varying sizes that ensures that all of the relevant data are properly added from our files. However, the small test case only had Edge Data correction to remove any edges between non-existent nodes. The medium size test case not only has Edge Data correction but also Node Data Correction by removing invalid airport nodes. The fourth test case focuses more on eliminating on invalid edges such as self loops and duplicate edges and removing any airports that don't fit our required parameters. The last test case focuses on a larger dataset, where we test to make sure that the correct number of valid airports are included. We also test to make sure that there is indeed one flight connecting each pair of airports. Once all of these tests were passed we knew that our code would be able to correctly process the entire dataset. <br>
+
+## Input Reading:
+The next step in our assignment was to take all of the nodes and edges that were created by the Data Cleanup Algorithm and insert them into our graph. This part of the project was rather simple, it had one function called fullGraph which was a constructor for the fullGraph class. It took in a Graph reference and a vector of strings representing all the files a user may want to be inserted; however, the file order in the vector must go node, edge, node, edge, …. This was done so that if the user ever wished to have more than two types of travel types they could be easily inserted into the graph. For example, they could insert a plane, car, and train data type if they so wished to. The code first starts looping through the vector calling the helper function insertAllNodes and insertAllEdges which loops through the given file and inserts all the nodes and edges into the graph from the file. This is done by simply looping through the file one character at a time, and since we know what the data has been cleaned and what format should be, in that loop we can iterate through the line, converting each character either to an int or a double, and once we get all the info we insert it either as an edge or node and then we loop back until the file is empty. 
+
+### Testing:
+Since fileParser.cpp is a pretty simple algorithm that inserts all the nodes and edges from the file, there are only two test cases of varying sizes that checks if all of the nodes and edges contained in the file are properly added. The small test case just tests with a file of 3 nodes and a file with 1 edge and then checks if all were added. The 2nd test case is a massive one that uses all the nodes/edges created by our sanitized code and also just checks if all of them were properly added/detected by our code. Since they both pass, we know this aspect of the code works
+

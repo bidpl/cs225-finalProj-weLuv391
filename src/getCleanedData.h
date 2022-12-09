@@ -19,12 +19,12 @@ class Sanitizer{
         */
         Sanitizer();
         /*
-        * @brief main function that takes in 3 csv files with relevant transportation and 
+        * @brief main function that takes in 3 files with relevant transportation and 
         * location data and returns two csv files of nodes and edges with data correction 
         * 
-        * @param intersectionFile - csv file that holds the data for all the intersections in California
+        * @param intersectionFile - space seperated file that holds the data for all the intersections in California
         * @param airportFile - csv file that holds all the data for airports
-        * @param roadEdgeFile - csv file that holds all the data for all the road edges connecting the interscections
+        * @param roadEdgeFile - space seperated file that holds all the data for all the road edges connecting the interscections
         */
         void getCleanedData(std::string intersectionFile, std::string airportFile, std::string roadEdgeFile);
 
