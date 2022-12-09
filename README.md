@@ -38,7 +38,7 @@ We have implemented a myriad of test cases that test the validity of every aspec
 ### __General Description of Test Cases__:<br>
 Location: *finalProj-weLuv391/tests/test.cpp* <br>
 #### __sanitizer__: <br>
-This part of the code is what takes in our data set and cleans it up, removing all the extraneous or invalid data. It also creates all the edges between the airports and airports to the closest intersection. The first test case just measures if the program created an edge from every airport to an intersection using the kd-tree
+This part of the code is what takes in our data set and cleans it up, removing all the extraneous or invalid data. It also creates all the edges between the airports and airports to the closest intersection. The first test case just measures if the program created an edge from every airport to an intersection using the kd-tree. The next two test cases are simple
 #### __input_reader__: <br>
 Input_reader is a pretty simple algorithim that simply inserts all the nodes and edges from the file and that is what the two test cases do. The small test case just tests with a file of 3 nodes and a file with 1 edge and then checks if all were added. The 2nd test case is a massive one that uses all the nodes/edges created by our sanitize code and also just checks if all of them were properly added/detected by our code.
 #### __graph__: <br>
