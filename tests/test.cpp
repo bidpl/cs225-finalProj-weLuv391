@@ -12,7 +12,7 @@ TEST_CASE("practiceTest", "[weight=1][part=1]") {
 }
 
 TEST_CASE("KDTree Test", "[weight=infinity][part=sanitizer]") {
-    int airCount, connectingCount;
+  int airCount, connectingCount;
   Sanitizer files;
   files.getCleanedData("roadIntersections.dat", "airports.dat", "roadEdgeData.dat");
   airCount = files.getNodeCount(1);
@@ -232,7 +232,9 @@ TEST_CASE("Multiple Edges Insert", "[part=graph]") {
   REQUIRE(!(testGraph.insertEdge(6, 2, 4, 0, 0)));
 }
 
-TEST_CASE("Get Travel Time", "[part=graph]") {
+// Check that get travel time returns the right time
+// Checks that it throws error if invalid id
+TEST_CASE("Get Travel Speed/Time", "[part=graph]") {
   Graph testGraph;
 
   for(int i = 0; i < 5; ++i) {
@@ -240,7 +242,7 @@ TEST_CASE("Get Travel Time", "[part=graph]") {
   }
 
   testGraph.insertEdge(0, 0, 1, 0, -1);
-  testGraph.insertEdge(1, 3, 1, 0, 0);
+  testGraph.insertEdge(1, 3, 1, 21, 0);
   testGraph.insertEdge(2, 3, 0, 0, 1);
   testGraph.insertEdge(3, 1, 2, 0, 2);
   testGraph.insertEdge(4, 4, 2, 0, 3);
@@ -273,8 +275,13 @@ TEST_CASE("Get Travel Time", "[part=graph]") {
   REQUIRE(testGraph.getTravelSpeed(2) == 12);
   REQUIRE(testGraph.getTravelSpeed(3) == 69);
   REQUIRE(testGraph.getTravelSpeed(4) == 420);
+
+  // Check Travel Times
+  REQUIRE(testGraph.getTravelTime(1) == testGraph.LINEAR_CONV_FACTOR);
 }
 
+// Makes a 5 node graph and iterates through it
+// Checks that the nodes were all visited and in the right order
 TEST_CASE("Basic BFS iteration", "[part=bfs]") {
   Graph testGraph;
 
@@ -299,6 +306,19 @@ TEST_CASE("Basic BFS iteration", "[part=bfs]") {
   REQUIRE(visitOrder == ans);
 }
 
+TEST_CASE("Empty BFS iteration", "[part=bfs]") {
+  Graph testGraph;
+
+  Graph::Iterator it = testGraph.begin();
+
+  REQUIRE(!(it != testGraph.end()));
+
+  // If you increment iterator of emptyGraph's begin, it should stay the same
+  // use ! != for == since == is not implemented
+  REQUIRE(!(it != ++it));
+}
+
+// Tests empty dset find
 TEST_CASE("DisjointSets throws std::out_of_range if query empty dset", "[part=dsets]") {
   DisjointSets emptySet;
 
@@ -310,6 +330,8 @@ TEST_CASE("DisjointSets throws std::out_of_range if query empty dset", "[part=ds
   }
 }
 
+// Constructs disjoint set of 5 elements and checks for correction construction
+// unions items and chekcs after each batch of unions
 TEST_CASE("Basic DisjointSets test", "[part=dsets]") {
   DisjointSets dset;
 
@@ -340,7 +362,36 @@ TEST_CASE("Basic DisjointSets test", "[part=dsets]") {
   REQUIRE(dset.size(4) == 1);
 }
 
-// Taken from lecture
+// Checks tha dsets throws out of range when given out of bounds index
+TEST_CASE("Test DisjointSets out of bounds", "[part=dsets]") {
+  DisjointSets dset;
+
+  // Add NUM_ELEM elems to disjoint set
+  const int NUM_ELEM = 5;
+  dset.addelements(NUM_ELEM);
+
+  REQUIRE(dset.find(1) == 1);
+
+  try {
+    dset.find(NUM_ELEM);
+    FAIL("dset.find(NUM_ELEM) did not throw exception");
+  } catch(std::out_of_range) {
+    REQUIRE("dset.find(NUM_ELEM) threw correct out_of_range");
+  } catch(...) {
+    FAIL("dset.find(NUM_ELEM) did not throw correct exception");
+  }
+
+  try {
+    dset.find(-1);
+    FAIL("dset.find(-1) did not throw exception");
+  } catch(std::out_of_range) {
+    REQUIRE("dset.find(-1) threw correct out_of_range");
+  } catch(...) {
+    FAIL("dset.find(-1) did not throw correct exception");
+  }
+}
+
+// Kruskal example taken from CS225 lecture
 TEST_CASE("Lecture Kruskal Test Case", "[part=MST]") {
   Graph testGraph;
 
@@ -365,13 +416,27 @@ TEST_CASE("Lecture Kruskal Test Case", "[part=MST]") {
   testGraph.insertEdge(14, 5, 6, 4, 0);
   testGraph.insertEdge(15, 6, 7, 9, 0);
 
-  std::vector<Graph::Edge> mstEdgeList;
-  Graph mst = testGraph.generateMST(mstEdgeList);
+  Graph mst = testGraph.generateMST();
 
-  REQUIRE(mstEdgeList.size() == 7);
+  REQUIRE(mst.getEdgeList().size() == 7);
   
   int edgeWeights[] = {2, 2, 4, 5, 8, 10, 13};
   for(unsigned i = 0; i < 7; ++i) {
-    REQUIRE(edgeWeights[i] == mstEdgeList[i].distance);
+    REQUIRE(edgeWeights[i] == mst.getEdgeList()[i].distance);
   }
+}
+
+TEST_CASE("Empty & 1 node Kruskal cases", "[part=MST]") {
+  Graph testGraph;
+
+  Graph emptyMst = testGraph.generateMST();
+
+  REQUIRE(emptyMst.getEdgeList().size() == 0);
+  REQUIRE(emptyMst.getNodes().size() == 0);
+
+  testGraph.insertNode(0, std::pair<double,double>{1.0, 1.0});
+
+  Graph singleMst = testGraph.generateMST();
+  REQUIRE(singleMst.getEdgeList().size() == 0);
+  REQUIRE(singleMst.getNodes().size() == 1);
 }

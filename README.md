@@ -37,13 +37,23 @@ We have implemented a myriad of test cases that test the validity of every aspec
 
 ### __General Description of Test Cases__:<br>
 Location: *finalProj-weLuv391/tests/test.cpp* <br>
+
 #### __sanitizer__: <br>
 This part of the code is what takes in our data set and cleans it up, removing all the extraneous or invalid data. It also creates all the edges between the airports and airports to the closest intersection. The first test case just measures if the program created an edge from every airport to an intersection using the kd-tree. The next two test cases are simple insertion cases of varying sizes that ensures that all of the relevant data are properly added from our files. However, the small test case only has Edge Data correction to remove any edges between non existant nodes, and the Medium Test Case has that and also the Node Data Correction of removing invalid airport nodes. The fourth test case focuses more on elimanting on invalid edges such as self loops and duplicate edges and removing any airports that don't fit our required parameters. The last test case focuses on a larger dataset, where we test to make sure that correct number of valid airports are included. We also test to make sure that there is indeed one flight connecting each pair of airports.
+
 #### __input_reader__: <br>
 Input_reader is a pretty simple algorithim that simply inserts all the nodes and edges from the file and that is what the two test cases do. The small test case just tests with a file of 3 nodes and a file with 1 edge and then checks if all were added. The 2nd test case is a massive one that uses all the nodes/edges created by our sanitize code and also just checks if all of them were properly added/detected by our code.
+
 #### __graph__: <br>
+We test our basic get/insert functions like getAdj, getEdge, insertEdge, insertNode on valid graphs and on invalid (missing nodes, empty, etc) graphs. We make sure to try to read invalid nodes/edges and write invalid nodes/edges to ensure the error handling (whether be auto correct or exception throwing).
 
 #### __bfs__: <br>
+For this test, we used one example graph (connected, 5 nodes, 6 edges) with some backedges. This ensures that the graph will not revisit nodes, visit nodes early, or miss nodes. We also test the iterator on an empty graph to make sure it starts on the end iterator and doesn't move when incremented.
+
 #### __dsets__: <br>
+This code should already be tested from mp_mazes. We added another basic test to ensure the methods work (add slots, union sets, find size of set, find key of set).
+
 #### __MST__: <br>
+We used the Kruskal example from Fa23 CS225 lecture. This shows that it works for an average graph. We also test it on an empty node and a single node graph. This ensures that it will generate an empty MST for those edge cases.
+
 #### __A-Star__: <br>
