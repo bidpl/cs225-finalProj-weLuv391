@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     Graph network;
     fullGraph fileParser = fullGraph(std::vector<string>{"../src/nodes.txt", "../src/edges.txt"}, network);
 
-    std::vector<double> speeds = {60, 0.001}; // 60mph average highway, 500 mph cruising speed of 737
+    std::vector<double> speeds = {60, 500}; // 60mph average highway, 500 mph cruising speed of 737
     network.setSpeedLookup(speeds);
 
     std::cout << "Num nodes: " << network.getNodes().size() << std::endl;
