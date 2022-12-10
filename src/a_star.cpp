@@ -26,8 +26,7 @@ std::vector<Graph::Edge> shortestPath(Graph& graph, std::pair<double,
         unsigned int smallestF_idx = getMinFCell(open_list); 
         Cell* smallestF = open_list[smallestF_idx];
         open_list.erase(open_list.begin() + smallestF_idx);
-        visited[smallestF->currnode.ID] = true; // Mark as visietd
-        std::cout << smallestF->currnode.ID << ": " << smallestF->currnode.coords.second << ',' << smallestF->currnode.coords.first << std::endl;
+        visited[smallestF->currnode.ID] = true; // Mark as visited
 
         //generating the successors of current node smallestF
         for (int i : smallestF->currnode.adjList) {

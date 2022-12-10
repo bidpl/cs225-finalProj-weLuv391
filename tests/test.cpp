@@ -5,6 +5,8 @@
 #include "fileParser.h"
 #include "a_star.h"
 
+#include <algorithm>
+
 
 TEST_CASE("practiceTest", "[weight=1][part=1]") {
   int i = 0;
@@ -520,4 +522,70 @@ TEST_CASE("moderate graph a* test", "[part=a_star]") {
     REQUIRE(shortest_path2[i].ID == ans2[i]);
     REQUIRE(shortest_path3[i].ID == ans3[i]); 
   }
+}
+
+TEST_CASE("Full test", "[part=full]") {
+  // Clean up data into edges and nodes file
+    Sanitizer files;
+    files.getCleanedData("roadIntersections.dat", "airports.dat", "roadEdgeData.dat");
+    
+    // Build graph from edges and nodes file
+    Graph network;
+    fullGraph fileParser = fullGraph(std::vector<string>{"../src/nodes.txt", "../src/edges.txt"}, network);
+
+    std::vector<double> speeds = {60, 500}; // 60mph average highway, 500 mph cruising speed of 737
+    network.setSpeedLookup(speeds);
+
+    std::cout << "Num nodes: " << network.getNodes().size() << std::endl;
+    std::cout << "Num edges: " << network.getEdgeList().size() << std::endl << std::endl;
+
+    std::vector<int> visitOrder;
+    for(Graph::Iterator it = network.begin(); it != network.end(); ++it) {
+        visitOrder.push_back((*it).ID);
+    }
+
+    // Checks every ID from 0 to visitOrder.size() - 1 is included in visit list
+    std::sort(visitOrder.begin(), visitOrder.end());
+    bool consecutiveIds = true;
+    for(unsigned i = 0; i < visitOrder.size() - 1; ++i) {
+        if(visitOrder[i] != visitOrder[i+1] - 1) {
+            consecutiveIds = false;
+            break;
+        }
+    }
+
+    std::cout << "BFS iterator visits " << visitOrder.size() << " nodes" << std::endl;
+    std::cout << "BFS iterator visits every node once: " << (consecutiveIds ? "true" : "false") << std::endl << std::endl;
+
+    REQUIRE(visitOrder.size() == 21076);
+    REQUIRE(consecutiveIds);
+
+    Graph mst = network.generateMST();
+
+    int counter = 0;
+    for(Graph::Iterator it = network.begin(); it != network.end(); ++it) {
+        ++counter;
+    }
+
+    std::cout << "MST contains " << mst.getEdgeList().size() << " edges" << std::endl;
+    std::cout << "BFS of MST contains " << counter << " nodes" << std::endl << std::endl << std::endl;
+
+    REQUIRE(mst.getEdgeList().size() == 21076 - 1);
+    REQUIRE(counter == 21076);
+
+    // Golden Gate S Vista Point to Santa Monica Pier
+    std::pair<double, double> startpt{-122.474703, 37.807608};
+    std::pair<double, double> endpt{-118.498386, 34.008582};
+    std::vector<Graph::Edge> pathEdges = shortestPath(network, startpt, endpt);
+
+    // some function to print edges out
+    // function to print nodes in path in visited order
+    std::cout << "A* traversal includes: " << pathEdges.size() << " steps:"<< std::endl;
+    Graph::Node prevNode = network.getNodes()[network.getNearestNode(startpt)];
+    std::cout << prevNode.coords.second << ',' << prevNode.coords.first << std::endl;
+    for(unsigned i = 0; i < pathEdges.size(); ++i) {
+        prevNode = network.getNodes()[(pathEdges[i].end1 == prevNode.ID) ? pathEdges[i].end2 : pathEdges[i].end1];
+
+        std::cout << prevNode.coords.second << ',' << prevNode.coords.first << std::endl;
+    }
 }
