@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     Graph network;
     fullGraph fileParser = fullGraph(std::vector<string>{"../src/nodes.txt", "../src/edges.txt"}, network);
 
-    std::vector<double> speeds = {60, 500}; // 60mph average highway, 500 mph cruising speed of 737
+    std::vector<double> speeds = {60, 0.001}; // 60mph average highway, 500 mph cruising speed of 737
     network.setSpeedLookup(speeds);
 
     std::cout << "Num nodes: " << network.getNodes().size() << std::endl;
@@ -60,14 +60,23 @@ int main(int argc, char *argv[]) {
     }
 
     std::cout << "MST contains " << mst.getEdgeList().size() << " edges" << std::endl;
-    std::cout << "BFS of MST contains " << counter << " nodes" << std::endl << std::endl;
+    std::cout << "BFS of MST contains " << counter << " nodes" << std::endl << std::endl << std::endl;
 
     // Golden Gate S Vista Point to Santa Monica Pier
-    std::vector<Graph::Edge> pathEdges = shortestPath(network, std::pair<double, double>{-122.133544, 37.399267}, std::pair<double, double>{-122.097167, 37.421674});
+    std::pair<double, double> startpt{-122.474703, 37.807608};
+    std::pair<double, double> endpt{-118.498386, 34.008582};
+    std::vector<Graph::Edge> pathEdges = shortestPath(network, startpt, endpt);
 
     // some function to print edges out
     // function to print nodes in path in visited order
-    std::cout << "A* traversal includes: " << pathEdges.size() << std::endl << std::endl;
+    std::cout << "A* traversal includes: " << pathEdges.size() << " steps:"<< std::endl;
+    Graph::Node prevNode = network.getNodes()[network.getNearestNode(startpt)];
+    std::cout << prevNode.coords.second << ',' << prevNode.coords.first << std::endl;
+    for(unsigned i = 0; i < pathEdges.size(); ++i) {
+        prevNode = network.getNodes()[(pathEdges[i].end1 == prevNode.ID) ? pathEdges[i].end2 : pathEdges[i].end1];
 
+        std::cout << prevNode.coords.second << ',' << prevNode.coords.first << std::endl;
+    }
+ 
     return 0;
 }
