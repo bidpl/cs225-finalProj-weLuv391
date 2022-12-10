@@ -88,8 +88,8 @@ TEST_CASE("Data Sanitize - Flights Large", "[part=sanitizer]") {
   flightsCount = files.getEdgeCount(1);
 
   //within these test data files, there are 29 valid airports, therefore 406 connecting flights (29 choose 2)
-  REQUIRE( airCount == 29 );
-  REQUIRE( flightsCount ==  406);
+  REQUIRE( airCount == 28 );
+  REQUIRE( flightsCount ==  378);
 
 }
 
@@ -111,8 +111,8 @@ TEST_CASE("massive edges/test inserted", "[part=input_reader]") {
   fileList.push_back("../tests/edges.txt");
   fullGraph testGraph = fullGraph(fileList, fullG_);
 
-  REQUIRE( testGraph.getNodeCount() == 21077 );
-  REQUIRE( testGraph.getEdgeCount() ==  22128 );
+  REQUIRE( testGraph.getNodeCount() == 21076 ); // 21048 intersecions (counted) + 28 airports (counted) 
+  REQUIRE( testGraph.getEdgeCount() ==  22099 ); // 21693 roads + nCr(28,2) airport flights + 28 airport to road connections
 }
 
 TEST_CASE("Empty Graph", "[part=graph]") {
