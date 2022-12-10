@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <string>
 #include "graph.h"
 #include "getCleanedData.h"
 #include "fileParser.h"
@@ -24,50 +25,38 @@ int main(int argc, char *argv[]) {
     std::vector<double> speeds = {60, 500}; // 60mph average highway, 500 mph cruising speed of 737
     network.setSpeedLookup(speeds);
 
-    std::cout << "Num nodes: " << network.getNodes().size() << std::endl;
-    std::cout << "Num edges: " << network.getEdgeList().size() << std::endl << std::endl;
+    // Get start/end
+    std::pair<double,double> startLoc;
+    std::pair<double,double> endLoc;
 
-    std::vector<int> visitOrder;
-    for(Graph::Iterator it = network.begin(); it != network.end(); ++it) {
-        visitOrder.push_back((*it).ID);
-    }
+    std::string inBuff;
+    std::cout << "Start (\"lat,long\"): ";
+    std::getline(std::cin, inBuff);
+    inBuff.erase(std::remove_if(inBuff.begin(), inBuff.end(), ::isspace), inBuff.end());
+    unsigned cut = inBuff.find(',');
+    startLoc.second = std::stod(inBuff.substr(0, cut));
+    startLoc.first = std::stod(inBuff.substr(cut + 1));
 
-    // Checks every ID from 0 to visitOrder.size() - 1 is included in visit list
-    std::sort(visitOrder.begin(), visitOrder.end());
-    bool consecutiveIds = true;
-    for(unsigned i = 0; i < visitOrder.size() - 1; ++i) {
-        if(visitOrder[i] != visitOrder[i+1] - 1) {
-            consecutiveIds = false;
-            break;
-        }
-    }
+    std::cout << "Destination (\"lat\",\"long\"): ";
+    std::getline(std::cin, inBuff);
+    inBuff.erase(std::remove_if(inBuff.begin(), inBuff.end(), ::isspace), inBuff.end());
+    cut = inBuff.find(',');
+    endLoc.second = std::stod(inBuff.substr(0, cut));
+    endLoc.first = std::stod(inBuff.substr(cut + 1));
 
-    std::cout << "BFS iterator visits " << visitOrder.size() << " nodes" << std::endl;
-    std::cout << "BFS iterator visits every node once: " << (consecutiveIds ? "true" : "false") << std::endl << std::endl;
-
-    // Print out fist NUM_OUT items in BFS
-    // const unsigned NUM_OUT = 21076;
-    // std::cout << "First " << NUM_OUT << " items in BFS iteration: " <<std::endl;
-    // for(unsigned i = 0; i < NUM_OUT; ++i) {
-    //     std::cout << network.getNodes()[visitOrder[i]].coords.second << "," << network.getNodes()[visitOrder[i]].coords.first << std::endl;
-    // }
-
-    Graph mst = network.generateMST();
-
-    int counter = 0;
-    for(Graph::Iterator it = network.begin(); it != network.end(); ++it) {
-        ++counter;
-    }
-
-    std::cout << "MST contains " << mst.getEdgeList().size() << " edges" << std::endl;
-    std::cout << "BFS of MST contains " << counter << " nodes" << std::endl << std::endl;
-
-    // Golden Gate S Vista Point to Santa Monica Pier
-    std::vector<Graph::Edge> pathEdges = shortestPath(network, std::pair<double, double>{-122.133544, 37.399267}, std::pair<double, double>{-122.097167, 37.421674});
+    // run a*
+    std::vector<Graph::Edge> pathEdges = shortestPath(network, startLoc, endLoc);
 
     // some function to print edges out
     // function to print nodes in path in visited order
-    std::cout << "A* traversal includes: " << pathEdges.size() << std::endl << std::endl;
+    std::cout << "A* traversal includes: " << pathEdges.size() << " steps:"<< std::endl;
+    Graph::Node prevNode = network.getNodes()[network.getNearestNode(startLoc)];
+    std::cout << prevNode.coords.second << ',' << prevNode.coords.first << std::endl;
+    for(unsigned i = 0; i < pathEdges.size(); ++i) {
+        prevNode = network.getNodes()[(pathEdges[i].end1 == prevNode.ID) ? pathEdges[i].end2 : pathEdges[i].end1];
 
+        std::cout << prevNode.coords.second << ',' << prevNode.coords.first << std::endl;
+    }
+ 
     return 0;
 }

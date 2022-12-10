@@ -15,14 +15,18 @@ std::vector<Graph::Edge> shortestPath(Graph& graph, std::pair<double,
     //initialize open and closed lists
     Cell* start_cell = new Cell{start_node, nullptr, 0};
     std::vector<Cell*> open_list{start_cell};
-    std::vector<Cell*> closed_list;
+
+    // Init visited markers
+    std::vector<bool> visited(nodes.size(), false);
 
     //A* algorithm
+    unsigned counter = 0;
     while (!open_list.empty()) {
         //gets idx of min F Cell, get that Cell, and removes that Cell
         unsigned int smallestF_idx = getMinFCell(open_list); 
         Cell* smallestF = open_list[smallestF_idx];
         open_list.erase(open_list.begin() + smallestF_idx);
+        visited[smallestF->currnode.ID] = true; // Mark as visited
 
         //generating the successors of current node smallestF
         for (int i : smallestF->currnode.adjList) {
@@ -49,37 +53,31 @@ std::vector<Graph::Edge> shortestPath(Graph& graph, std::pair<double,
                     delete ptr;
                     ptr = nullptr;
                 }
-                for (Cell* ptr : closed_list) {
-                    delete ptr;
-                    ptr = nullptr;
-                }
 
                 return path;
             }
             
+            // If cell already visited (on final path), skip this cell
+            if(visited[endpoint.ID]) {
+                continue;
+            }
+
             //Cell for smallestF successor (endpoint)
             Cell* endpoint_cell = new Cell{endpoint, smallestF, calculateF(graph, edge, endpoint, end_node)};
 
             //if cell with same currnode as endpoint exists on open list, check if it has lower F
             int open_list_idx = getCellIdx(open_list, endpoint_cell);
-            if (open_list_idx != -1 && open_list[open_list_idx]->F < endpoint_cell->F) {
+            if (open_list_idx != -1 && open_list[open_list_idx]->F <= endpoint_cell->F) {
                 delete endpoint_cell;
                 continue;
-            }
-
-            //if cell with same currnode as endpoint exists on closed list, check if it has lower F
-            int closed_list_idx = getCellIdx(closed_list, endpoint_cell);
-            if (closed_list_idx != -1 && closed_list[closed_list_idx]->F < endpoint_cell->F) {
-                delete endpoint_cell;
-                continue;
+            } else if (open_list_idx != -1 && open_list[open_list_idx]->F < endpoint_cell->F) {
+                delete open_list[open_list_idx];
+                open_list.erase(open_list.begin() + open_list_idx);
             }
 
             //else push endpoint_cell onto open_list
             open_list.push_back(endpoint_cell);
         }
-
-        //push smallestF cell onto closed list to show it has been processed
-        closed_list.push_back(smallestF);
     }
     //this should never happen
     return std::vector<Graph::Edge>();

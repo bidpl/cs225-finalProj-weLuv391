@@ -28,6 +28,7 @@ Graph::Node & Graph::Node::operator=(const Node & other) {
     ID = other.ID;
     coords = other.coords;
     adjList = other.adjList;
+    type = other.type;
 
     return *this;
 }
