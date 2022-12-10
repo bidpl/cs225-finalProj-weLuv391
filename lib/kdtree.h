@@ -1,7 +1,7 @@
 /**
  * @file kdtree.h
  * KDTree implementation using Points in k-dimensional space.
- *
+ * This code was pulled from the mp_mosiacs assignment, and is only used for the data pre-processing
  * @author Zesheng Wang
  * @author Wade Fagen-Ulmschneider
  * @author Cinda Heeren

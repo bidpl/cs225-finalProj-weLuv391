@@ -111,6 +111,7 @@ class Graph {
          */
         double getTravelTime(int edgeID) const;
 
+        // This iterator will only iterate through the start's connected component
         class Iterator : std::iterator<std::forward_iterator_tag, Node> {
             public:
                 Iterator();
@@ -138,13 +139,12 @@ class Graph {
          * @brief generates a MST of a graph using Kruskal's alg
          * 
          * @param const Graph & graph - reference to target graph, must be properly formatted
-         * @param std::vector<Edge> & outList - where to output edgeList
          * 
          * @returns Graph - graph object representing MST (new nodes to show MST adjacency lists)
          * 
          */
 
-        Graph generateMST(std::vector<Edge> & outList);
+        Graph generateMST();
         /**
          * @brief converts distance in degrees (what's given in edge) to miles
          * 

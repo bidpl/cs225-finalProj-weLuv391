@@ -1,6 +1,9 @@
 /**
  * @file kdtree.cpp
  * Implementation of KDTree class.
+ * This code was pulled from our mp_mosiac assignment and is used in our A-Star algorithim and getCleanedData.cpp
+ * 
+ * @author Shivaditya Gohil (sgohil3)
  */
 
 #include <utility>

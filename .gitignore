@@ -1,2 +1,4 @@
 build/
 core
+src/edges.txt
+src/nodes.txt

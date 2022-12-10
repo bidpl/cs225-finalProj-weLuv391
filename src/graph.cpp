@@ -28,6 +28,7 @@ Graph::Node & Graph::Node::operator=(const Node & other) {
     ID = other.ID;
     coords = other.coords;
     adjList = other.adjList;
+    type = other.type;
 
     return *this;
 }
@@ -232,7 +233,7 @@ bool Graph::Iterator::operator!=(const Iterator &other) {
     return current_ != other.current_;
 }
 
-Graph Graph::generateMST(std::vector<Edge> & outList) {
+Graph Graph::generateMST() {
     DisjointSets connectedSets;
 
     // Setup n = |V| buckets for Kruskals - O(n)
@@ -263,7 +264,6 @@ Graph Graph::generateMST(std::vector<Edge> & outList) {
         }
     }
 
-    outList = mstGraph.edgeList;
     return mstGraph;
 }
 

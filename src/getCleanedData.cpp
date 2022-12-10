@@ -121,7 +121,6 @@ void Sanitizer::getCleanedData(std::string intersectionFile, std::string airport
             case 3816:
             case 3817:
             case 3867:
-            case 3877:
             case 3948:
             case 3949:
             case 4071:
@@ -145,7 +144,7 @@ void Sanitizer::getCleanedData(std::string intersectionFile, std::string airport
               nodePair.first = stod(lineVec[7]);
               nodePair.second = stod(lineVec[6]);
               allPoints.push_back(nodePair);
-              coorToID[nodePair] = stoi(lineVec[0]);
+              coorToID[nodePair] = oldNodeCount+airportCount-1;
               nodeCount++;
 
             default: break;                     
