@@ -3,7 +3,7 @@
 #include "graph.h"
 #include "dsets.h"
 #include "fileParser.h"
-#include "a*.h"
+#include "a_star.h"
 
 
 TEST_CASE("practiceTest", "[weight=1][part=1]") {
@@ -381,7 +381,7 @@ TEST_CASE("Lecture Kruskal Test Case", "[part=MST]") {
 creates a very basic 5 node graph with edges of all equal distances and speeds
 and checks to see if it takes the right path
 */
-TEST_CASE("basic a* test", "[part=a*]") {
+TEST_CASE("basic a* test", "[part=aa_star]") {
   Graph testGraph;
   testGraph.insertNode(0, std::pair<double, double>(100, 100));
   testGraph.insertNode(1, std::pair<double, double>(99, 100));
@@ -423,7 +423,7 @@ creating a slightly more difficult graph to navigate through, with edges of diff
 distances and speed limits. There are multiple paths to get from node to node so this 
 test case tests the intelligence of the a* algorithm.
 */
-TEST_CASE("moderate graph a* test", "[part=a*]") {
+TEST_CASE("moderate graph a* test", "[part=a_star]") {
   Graph testGraph;
   testGraph.insertNode(0, std::pair<double, double>(652, 1009));
   testGraph.insertNode(1, std::pair<double, double>(654, 1012));

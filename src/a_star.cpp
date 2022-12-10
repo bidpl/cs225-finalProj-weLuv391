@@ -1,4 +1,4 @@
-#include "a*.h"
+#include "a_star.h"
 #include <cmath>
 #include <vector>
 #include <iostream>
