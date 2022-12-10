@@ -266,6 +266,7 @@ Graph Graph::generateMST(std::vector<Edge> & outList) {
     outList = mstGraph.edgeList;
     return mstGraph;
 }
+
 int Graph::getNearestNode(std::pair<double, double> loc) const {
     std::map<std::pair <double, double>, int> coorToID;
     std::vector<Point<2>> coordinateVector; // a vector of points that match to our coordinates but in 

@@ -3,6 +3,7 @@
 #include "graph.h"
 #include "dsets.h"
 #include "fileParser.h"
+#include "a*.h"
 
 
 TEST_CASE("practiceTest", "[weight=1][part=1]") {
@@ -373,5 +374,84 @@ TEST_CASE("Lecture Kruskal Test Case", "[part=MST]") {
   int edgeWeights[] = {2, 2, 4, 5, 8, 10, 13};
   for(unsigned i = 0; i < 7; ++i) {
     REQUIRE(edgeWeights[i] == mstEdgeList[i].distance);
+  }
+}
+
+/*
+creates a very basic 5 node graph with edges of all equal distances and speeds
+and checks to see if it takes the right path
+*/
+TEST_CASE("basic a* test", "[part=a*]") {
+  Graph testGraph;
+  testGraph.insertNode(0, std::pair<double, double>(100, 100));
+  testGraph.insertNode(1, std::pair<double, double>(99, 100));
+  testGraph.insertNode(2, std::pair<double, double>(101, 100));
+  testGraph.insertNode(3, std::pair<double, double>(100, 99));
+  testGraph.insertNode(4, std::pair<double, double>(100, 101));
+  testGraph.insertEdge(0, 0, 1, 25, 0);
+  testGraph.insertEdge(1, 0, 2, 25, 0);
+  testGraph.insertEdge(2, 0, 3, 25, 0);
+  testGraph.insertEdge(3, 0, 4, 25, 0);
+  std::vector<double> speedLookup{25};
+  testGraph.setSpeedLookup(speedLookup);
+  /* shape of graph
+          1
+          |
+      3 - 0 - 4
+          |
+          2
+  all edges are 25 miles with routetype 0, with speed limit 25 mph
+  */
+
+  //correct answers
+  std::vector<int> ans1{2, 3};
+  std::vector<int> ans2{1, 0};
+
+  //a* generated solutions
+  std::vector<Graph::Edge> shortest_path1 = shortestPath(testGraph, std::pair<double, double>(100, 99), std::pair<double, double>(100, 101));
+  std::vector<Graph::Edge> shortest_path2 = shortestPath(testGraph, std::pair<double, double>(101, 100), std::pair<double, double>(99, 100));
+  std::vector<Graph::Edge> shortest_path3 = shortestPath(testGraph, std::pair<double, double>(102, 100), std::pair<double, double>(98, 100));
+  for(unsigned i = 0; i < 2; ++i) {
+    REQUIRE(shortest_path1[i].ID == ans1[i]);
+    REQUIRE(shortest_path2[i].ID == ans2[i]);
+    REQUIRE(shortest_path3[i].ID == ans2[i]); //this one tests the correctness of kd-tree get nearest node
+  }
+}
+
+/*
+creating a slightly more difficult graph to navigate through, with edges of different
+distances and speed limits
+*/
+TEST_CASE("moderate graph a* test", "[part=a*]") {
+  Graph testGraph;
+  testGraph.insertNode(0, std::pair<double, double>(652, 1009));
+  testGraph.insertNode(1, std::pair<double, double>(654, 1012));
+  testGraph.insertNode(2, std::pair<double, double>(656, 1012.5));
+  testGraph.insertNode(3, std::pair<double, double>(652, 1014));
+  testGraph.insertNode(4, std::pair<double, double>(656, 1015));
+  testGraph.insertNode(5, std::pair<double, double>(650, 1012));
+  testGraph.insertEdge(0, 0, 1, 249, 0);
+  testGraph.insertEdge(1, 1, 2, 142, 1);
+  testGraph.insertEdge(2, 1, 3, 195, 1);
+  testGraph.insertEdge(3, 2, 4, 173, 0);
+  testGraph.insertEdge(4, 3, 4, 154, 2);
+  testGraph.insertEdge(5, 0, 5, 249, 3);
+  testGraph.insertEdge(6, 5, 3, 195, 0);
+  std::vector<double> speedLookup{60, 55, 65, 50};
+  testGraph.setSpeedLookup(speedLookup);
+
+  std::vector<int> ans1{0, 2}; //shortest path from node 0 to 3
+  std::vector<int> ans2{0, 1, 3}; //shortest path from node 0 to 4
+  std::vector<int> ans3{3, 4, 6}; //shortest path from node 2 to node 5
+
+  std::vector<Graph::Edge> shortest_path1 = shortestPath(testGraph, std::pair<double, double>(652, 1009), std::pair<double, double>(652, 1014));
+  std::vector<Graph::Edge> shortest_path2 = shortestPath(testGraph, std::pair<double, double>(652, 1009), std::pair<double, double>(656, 1015));
+  std::vector<Graph::Edge> shortest_path3 = shortestPath(testGraph, std::pair<double, double>(656, 1012.5), std::pair<double, double>(650, 1012));
+  for(unsigned i = 0; i < 2; ++i) {
+    REQUIRE(shortest_path1[i].ID == ans1[i]);
+  }
+  for(unsigned i = 0; i < 3; ++i) {
+    REQUIRE(shortest_path2[i].ID == ans2[i]);
+    REQUIRE(shortest_path3[i].ID == ans3[i]); 
   }
 }
