@@ -420,7 +420,8 @@ TEST_CASE("basic a* test", "[part=a*]") {
 
 /*
 creating a slightly more difficult graph to navigate through, with edges of different
-distances and speed limits
+distances and speed limits. There are multiple paths to get from node to node so this 
+test case tests the intelligence of the a* algorithm.
 */
 TEST_CASE("moderate graph a* test", "[part=a*]") {
   Graph testGraph;
