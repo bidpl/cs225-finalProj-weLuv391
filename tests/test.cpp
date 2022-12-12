@@ -77,7 +77,7 @@ TEST_CASE("Data Sanitize - Node Checker", "[part=sanitizer]") {
 TEST_CASE("Data Sanitize - Invalid Data Test ", "[part=sanitizer]") {
   int airCount, flightsCount, edgeCount;
   Sanitizer files;
-  files.getCleanedData("roadIntersectionsTest.dat", "airportsTest.dat", "roadEdgeTest.dat");
+  files.getCleanedData("roadIntersectionsTest2.dat", "airportsTest.dat", "roadEdgeTest.dat");
 
   airCount = files.getNodeCount(1);
   flightsCount = files.getEdgeCount(1);
