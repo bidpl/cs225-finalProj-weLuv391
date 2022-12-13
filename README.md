@@ -92,5 +92,4 @@ This code should already be tested from mp_mazes. We added another basic test to
 We used the Kruskal example from Fa22 CS225 lecture. This shows that it works for an average graph. We also test it on an empty node and a single node graph. This ensures that it will generate an empty MST for those edge cases.
 
 #### __A-Star__: <br>
-We have two test cases for A-Star, the first one creates a very basic 5 node graph with edges of all equal distances and speeds and checks to see if it takes the right path. The second creates a slightly more difficult graph to navigate through, with edges of different distances and speed limits. There are multiple paths to get from node to node so this 
-test case tests the intelligence of the a* algorithm.
+We wrote two test cases for this algorithm. The first test created a very basic 5 node graph with edges of all equal distances and speed limits to verify the basic traversal ability of the algorithm. The second test created a slightly more difficult graph to navigate through with edges of different distances and speed limits. In this test case, there were multiple paths to get from node to node so the intelligence of the algorithm was tested, making sure that it took the shortest path while taking into account speed limits and distance.

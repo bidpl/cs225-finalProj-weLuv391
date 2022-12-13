@@ -41,7 +41,10 @@ The next step in our assignment was to take all of the nodes and edges that were
 ![Input Reader Test Case](resultImages/inputRead.png)
 
 ### Testing:
-Since fileParser.cpp is a pretty simple algorithm that inserts all the nodes and edges from the file, there are only two test cases of varying sizes that checks if all of the nodes and edges contained in the file are properly added. The small test case just tests with a file of 3 nodes and a file with 1 edge and then checks if all were added. The 2nd test case is a massive one that uses all the nodes/edges created by our sanitized code and also just checks if all of them were properly added/detected by our code. Since they both pass, we know this aspect of the code works
+Since fileParser.cpp is a pretty simple algorithm that inserts all the nodes and edges from the file, there are only two test cases of varying sizes that checks if all of the nodes and edges contained in the file are properly added. The small test case just tests with a file of 3 nodes and a file with 1 edge and then checks if all were added. The 2nd test case is a massive one that uses all the nodes/edges created by our sanitized code and also just checks if all of them were properly added/detected by our code. Since they both pass, we know this aspect of the code works.
+
+### Graph Implementation:
+To store our data as a graph, we had to implement a graph data structure. We chose to use an adjacency list implementation for two reasons. Firstly, we wanted quick access to a node’s neighbors for our pathfinding algorithm. Secondly, with such a large dataset, the O(n2) space complexity of adjacency matrices makes it infeasible to use.
 
 ## Graph Data Structure:
 To store our data as a graph, we had to implement a graph data structure. We chose to use an adjacency list implementation for two reasons. Firstly, we wanted quick access to a node’s neighbors for our pathfinding algorithm. Secondly, with such a large dataset, the O(n2) space complexity of adjacency matrices makes it infeasible to use. However, our implementation differed from the in class approach as we decided to use vector indexes instead of pointers as the data sanitize code returned our edges and nodes in order. 
@@ -78,8 +81,13 @@ We then wrote a Minimum Spanning Tree algorithm which could span the graph for o
 ![Kruskal's](resultImages/MST.png)
 
 ### Testing:
+Tested on empty graph as well as a small graph using 5 nodes and 6 edges. We ensure that on an empty graph our iterator for begin is equal to that for end. We verify using the small graph that each node is only visited once and that the intended BFS order is used.
 
-We used the Kruskal example from Fa22 CS225 lecture. This shows that it works for an average graph. We also test it on an empty node and a single node graph. This ensures that it will generate an empty MST for those edge cases.
+### Kruskal's:
+We then wrote a Minimum Spanning Tree algorithm which could span the graph for our dataset. Between Prim’s and Kruskal’s algorithms, we ultimately settled on implementing Kruskal’s due to the fact that our later-mentioned A* algorithm shares many components to Prim’s, so we wanted some added variety. Here, Kruskal’s algorithm sorts the edges of the graph in increasing order of weight, and adds them to the minimum spanning tree starting from the lowest weights, while skipping over values which would lead to a cycle creation. Once all of the edges have been added, the algorithm terminates, returning the MST.
+
+### Testing:
+We used the Kruskal example from Fa22 CS225 lecture. This shows that it works for an average graph. We also tested it on an empty node and a single node graph. This ensures that it will generate an empty MST for those edge cases.
 
 
 ## A-star:
