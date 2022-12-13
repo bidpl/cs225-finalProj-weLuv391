@@ -80,11 +80,6 @@ We then wrote a Minimum Spanning Tree algorithm which could span the graph for o
 >Kruskal's Output<br>
 ![Kruskal's](resultImages/MST.png)
 
-### Testing:
-Tested on empty graph as well as a small graph using 5 nodes and 6 edges. We ensure that on an empty graph our iterator for begin is equal to that for end. We verify using the small graph that each node is only visited once and that the intended BFS order is used.
-
-### Kruskal's:
-We then wrote a Minimum Spanning Tree algorithm which could span the graph for our dataset. Between Prim’s and Kruskal’s algorithms, we ultimately settled on implementing Kruskal’s due to the fact that our later-mentioned A* algorithm shares many components to Prim’s, so we wanted some added variety. Here, Kruskal’s algorithm sorts the edges of the graph in increasing order of weight, and adds them to the minimum spanning tree starting from the lowest weights, while skipping over values which would lead to a cycle creation. Once all of the edges have been added, the algorithm terminates, returning the MST.
 
 ### Testing:
 We used the Kruskal example from Fa22 CS225 lecture. This shows that it works for an average graph. We also tested it on an empty node and a single node graph. This ensures that it will generate an empty MST for those edge cases.
