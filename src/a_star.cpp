@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <stdexcept>
+#include <queue>
 
 std::vector<Graph::Edge> shortestPath(Graph& graph, std::pair<double, 
                                     double> start, std::pair<double, double> end) {
@@ -14,23 +15,19 @@ std::vector<Graph::Edge> shortestPath(Graph& graph, std::pair<double,
 
     //initialize open and closed lists
     Cell* start_cell = new Cell{start_node, nullptr, 0};
-    std::vector<Cell*> open_list{start_cell};
-
-    // Init visited markers
-    std::vector<bool> visited(nodes.size(), false);
+    std::priority_queue<Cell*, std::vector<Cell*>, CompareF> open_list;
+    open_list.push(start_cell);
+    std::vector<bool> visited(nodes.size(), false); // Init visited markers
 
     //A* algorithm
-    unsigned counter = 0;
     while (!open_list.empty()) {
         //gets idx of min F Cell, get that Cell, and removes that Cell
-        unsigned int smallestF_idx = getMinFCell(open_list); 
-        Cell* smallestF = open_list[smallestF_idx];
-        open_list.erase(open_list.begin() + smallestF_idx);
-        visited[smallestF->currnode.ID] = true; // Mark as visited
+        Cell* smallestF = open_list.top();
+        open_list.pop();
+        visited[smallestF->currnode.ID] = true; 
 
         //generating the successors of current node smallestF
         for (int i : smallestF->currnode.adjList) {
-
             //creates Node endpoint, a successor of smallestF
             Graph::Edge edge = edges[i];
             Graph::Node endpoint;
@@ -39,7 +36,6 @@ std::vector<Graph::Edge> shortestPath(Graph& graph, std::pair<double,
 
             //checking if endpoint is the desired end
             if (endpoint.ID == end_node.ID) {
-
                 //creating the result vector path using our backwards linked list through cell->parent
                 std::vector<Graph::Edge> path{graph.getEdge(endpoint.ID, smallestF->currnode.ID)};
                 Cell* currcell = smallestF;
@@ -48,12 +44,15 @@ std::vector<Graph::Edge> shortestPath(Graph& graph, std::pair<double,
                     currcell = currcell->parent;
                 }
                 
-                //going through open and closed lists to free up all cells on the heap
-                for (Cell* ptr : open_list) {
+                //going through open list to free up all cells on the heap
+                while (!open_list.empty()) {
+                    Cell* ptr = open_list.top();
+                    open_list.pop();
                     delete ptr;
                     ptr = nullptr;
                 }
 
+                //function is finished, returning the answer
                 return path;
             }
             
@@ -66,17 +65,13 @@ std::vector<Graph::Edge> shortestPath(Graph& graph, std::pair<double,
             Cell* endpoint_cell = new Cell{endpoint, smallestF, calculateF(graph, edge, endpoint, end_node)};
 
             //if cell with same currnode as endpoint exists on open list, check if it has lower F
-            int open_list_idx = getCellIdx(open_list, endpoint_cell);
-            if (open_list_idx != -1 && open_list[open_list_idx]->F <= endpoint_cell->F) {
+            if (onOpenListWithLowerF(open_list, endpoint_cell)) {
                 delete endpoint_cell;
                 continue;
-            } else if (open_list_idx != -1 && open_list[open_list_idx]->F < endpoint_cell->F) {
-                delete open_list[open_list_idx];
-                open_list.erase(open_list.begin() + open_list_idx);
-            }
+            } 
 
             //else push endpoint_cell onto open_list
-            open_list.push_back(endpoint_cell);
+            open_list.push(endpoint_cell);
         }
     }
     //this should never happen
@@ -94,22 +89,15 @@ double calculateF(const Graph& graph, Graph::Edge edge, Graph::Node potential, G
     return g + h;
 }
 
-unsigned int getMinFCell(std::vector<Cell*> cells) {
-    if (cells.empty()) throw std::runtime_error("Unexpected empty vector as argument");
-    Cell* min = cells[0];
-    unsigned int idx = 0;
-    for (unsigned i = 1; i < cells.size(); i++) {
-        if (cells[i]->F < min->F) {
-            min = cells[i];
-            idx = i;
+
+bool onOpenListWithLowerF(std::priority_queue<Cell*, std::vector<Cell*>, CompareF> cells, Cell* cell) {
+    while (!cells.empty()) {
+        Cell* top = cells.top();
+        cells.pop();
+        if (top->currnode.ID == cell->currnode.ID) {
+            if (top->F <= cell->F) return true;
+            return false;
         }
     }
-    return idx;
-}
-
-int getCellIdx(std::vector<Cell*> cells, Cell* cell) {
-    for (int i = 0; i < (int)cells.size(); i++) {
-        if (cells[i]->currnode.ID == cell->currnode.ID) return i;
-    }
-    return -1;
+    return false;
 }

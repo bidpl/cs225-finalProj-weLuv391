@@ -15,6 +15,16 @@ struct Cell {
 };
 
 /**
+ * @brief Struct for custom priority queue to know to order the cells in increasing order
+ * by their F-score. 
+ */
+struct CompareF {
+    bool operator()(Cell* const& c1, Cell* const& c2) {
+        return c1->F > c2->F;
+    }
+};
+
+/**
  * @brief Given a pair of any starting lat/long coords and the desired end coords, 
  * function uses A* algorithm on the given graph in order to find the shortest path 
  * between these coords.
@@ -45,22 +55,14 @@ std::vector<Graph::Edge> shortestPath(Graph& graph, std::pair<double,
 double calculateF(const Graph& graph, Graph::Edge edge, Graph::Node potential, Graph::Node dest);
 
 /**
- * @brief Helper function for shortestPath. Given a vector of Cell pointers find the index of cell
- * of the lowest F value in the vector.
+ * @brief Helper function for shortestPath. Given a priority queue of cell pointers
+ * and a cell pointer with certain node, checks to see if there is a node on the queue
+ * with the same node as the cell to find. If there is and that cell already has a lower
+ * F-score than the cell to find, then return true. Otherwise, returns false.
  *
- * @param cells Vector containing Cell pointers.
- * @return Index of cell with lowest F.
+ * @param cells Custom priority queue containing cell pointers to search through.
+ * @param cell Cell to find in cells.
+ * @return True if we found the a cell with the same position and it has a lower F-score,
+ * false otherwise. 
  */
-unsigned int getMinFCell(std::vector<Cell*> cells);
-
-
-/**
- * @brief Helper function for shortestPath. Given a vector of cell pointers
- * and a cell pointer with certain node, finds the index of cell with same node 
- * as currnode or -1 if the node doesn't exist in the vector.
- *
- * @param cells Vector containing cell pointers to search through
- * @param cell Cell to find in cells
- * @return Index of cell to find or -1 if cell doesn't exist 
- */
-int getCellIdx(std::vector<Cell*> cells, Cell* cell);
+bool onOpenListWithLowerF(std::priority_queue<Cell*, std::vector<Cell*>, CompareF> cells, Cell* cell);
