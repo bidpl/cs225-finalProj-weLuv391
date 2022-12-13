@@ -59,8 +59,9 @@ This will ask for an input in the specific order of Node Type 1, Node Type 2, an
 
 In order to run main.cpp, __the user must first input desired data files in `/data`__ (if this is not done the program will not be able to find the files). Next, in the build folder run the command:
 
-    ./main
-This will ask the user to input their data files and create a nodes.txt and edges.txt placed in entry with all the valid nodes/edges to be used for the graph. It will then create a graph using all the nodes and edges found the created txt files. It will then prompt the user to input two points and the location of where the user wishes the output to be stored and it will return the path connecting the two nodes with the minimum weight at the given file output location.
+    ./main <intersection-filename> <road-filename> <airport-filename>
+
+This will create a nodes.txt and edges.txt in `src/` with all the valid nodes/edges and will load them into a graph. It will then prompt the user to input the start and destination as GPS coordinates (`latitude,longitude`). It will then find the fastest path, starting and ending at the nodes nearest to the inputted coordinates. The program outputs this path as the coordinates of the nodes along the way. You can use a GPS coordinate visualizer like [gpsvisualizer.com](https://www.gpsvisualizer.com/map_input?form=data) to visualize the path.
 
 ### __Running the test cases__:<br>
 >Location: *finalProj-weLuv391/tests/test.cpp* <br>
