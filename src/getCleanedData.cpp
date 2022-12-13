@@ -40,16 +40,21 @@ void Sanitizer::getCleanedData(std::string intersectionFile, std::string airport
           getline(ss, substr, ' ');
           lineVec.push_back(substr);
       }
-    //outVec is a vector of strings, where each string represents:
-    // "nodeID, type=0, name=0, longitude, latitude"
-    outVec.push_back(lineVec[0]+", 0, 0, "+ lineVec[1] +", "+ lineVec[2]);
 
-    nodePair.first = stod(lineVec[1]);
-    nodePair.second = stod(lineVec[2]);
-    allPoints.push_back(nodePair);
-    coorToID[nodePair] = stoi(lineVec[0]);
-    nodeCount++;
+    //check that this falls within the boundaries of california
+    if(stod(lineVec[2]) < 42.1 && stod(lineVec[2]) > 32.5){
+      if(stod(lineVec[1]) < -114.2 && stod(lineVec[1]) > -124.4){
+        //outVec is a vector of strings, where each string represents:
+        // "nodeID, type=0, name=0, longitude, latitude"
+        outVec.push_back(lineVec[0]+", 0, 0, "+ lineVec[1] +", "+ lineVec[2]);
 
+        nodePair.first = stod(lineVec[1]);
+        nodePair.second = stod(lineVec[2]);
+        allPoints.push_back(nodePair);
+        coorToID[nodePair] = stoi(lineVec[0]);
+        nodeCount++;
+      }
+    }
   }
   nodeCountIND.push_back(nodeCount);
   nodeStartEnd.second = nodeCount-1; //load the end index and push into our vector
