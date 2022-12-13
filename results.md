@@ -46,8 +46,8 @@ Since fileParser.cpp is a pretty simple algorithm that inserts all the nodes and
 ## Graph Data Structure:
 To store our data as a graph, we had to implement a graph data structure. We chose to use an adjacency list implementation for two reasons. Firstly, we wanted quick access to a node’s neighbors for our pathfinding algorithm. Secondly, with such a large dataset, the O(n2) space complexity of adjacency matrices makes it infeasible to use. However, our implementation differed from the in class approach as we decided to use vector indexes instead of pointers as the data sanitize code returned our edges and nodes in order. 
 
->Kruskal's, Graph, and BFS Output<br>
-![Kruskal's](resultImages/MST.png)
+>Graph, and BFS Output<br>
+![Graph Output](resultImages/GraphOutput.png)
 
 
 ## Testing
@@ -74,7 +74,8 @@ For this test, we used one example graph (connected, 5 nodes, 6 edges) with some
 We then wrote a Minimum Spanning Tree algorithm which could span the graph for our dataset. Between Prim’s and Kruskal’s algorithms, we ultimately settled on implementing Kruskal’s due to the fact that our later-mentioned A* algorithm shares many components to Prim’s, so we wanted some added variety. Here, Kruskal’s algorithm sorts the edges of the graph in increasing order of weight, and adds them to the minimum spanning tree starting from the lowest weights, while skipping over values which would lead to a cycle creation. Once all of the edges have been added, the algorithm terminates, returning the MST. Once again since this was  a simple algorithm that was not too difficult at all to be implemented. Especially since we went with the sorted list method where we just altered our operator< function for edges in order to use std::sort on a vector of edges. We also already implemented the Disjoint Set code we used in mp_mazes, so that made our lives easier.
 
 
->Refer to the Image in Graph Data Structure for Kruskal's output<br>
+>Kruskal's Output<br>
+![Kruskal's](resultImages/MST.png)
 
 ### Testing:
 
