@@ -50,12 +50,18 @@ We test our basic get/insert functions like getAdj, getEdge, insertEdge, insertN
 
 ## BFS
 
+Once we have set up our graph implementation, we needed to ensure that the graph could be correctly traversed. This means that a correctly implemented BFS Traversal should visit each node exactly once and the total number of nodes visited should equal the number of total nodes. Using this traversal, we can see that indeed our graph is correctly implemented if the number of traversed nodes is equal to the number of correct nodes in our cleaned dataset. This was not too difficult to implement as we have implemented traversals many times before. We simply had to create our own traversal class for the Graph that uses a queue of need to be visited and a vector of visited. Using these two data structures, our operator++ function can iterate through the graph in the proper fashion, adding nodes with each function call. 
+
+
 ### Testing 
 
 For this test, we used one example graph (connected, 5 nodes, 6 edges) with some backedges. This ensures that the graph will not revisit nodes, visit nodes early, or miss nodes. We also test the iterator on an empty graph to make sure it starts on the end iterator and doesn't move when incremented.
 
 
 ## Kruskal's:
+
+We then wrote a Minimum Spanning Tree algorithm which could span the graph for our dataset. Between Prim’s and Kruskal’s algorithms, we ultimately settled on implementing Kruskal’s due to the fact that our later-mentioned A* algorithm shares many components to Prim’s, so we wanted some added variety. Here, Kruskal’s algorithm sorts the edges of the graph in increasing order of weight, and adds them to the minimum spanning tree starting from the lowest weights, while skipping over values which would lead to a cycle creation. Once all of the edges have been added, the algorithm terminates, returning the MST. Once again since this was an algorithm, it was not too difficult at all to be implemented, especially since we went with the sorted list method where we just altered our operator < function for edges in order to use std::sort on a vector of edges. We also had to implement the Disjoint Set code we used in mp_mazes in order to measure whether or not we have visited every node by creating a set of nodes everytime we connect them using an edge.
+
 
 ### Testing:
 
