@@ -1,6 +1,6 @@
 # cs225-finalProj-weLuv391
 Final Project for CS225 Fa22 group weLuv391
-
+Presentation Video: https://youtu.be/S5WsJeHn1_0
 
 ### __DISCLAIMER__:<br>
 >#### Location: *finalProj-weLuv391/lib/*
@@ -38,8 +38,11 @@ Assuming that a valid implementation of a Kd-tree and Disjoint Sets is present, 
 >#### __finalProj-weLuv391/test/__:<br>
 >>Folder location for all the test cases and all the txt files created by tests.cpp<br>
 
+>#### __finalProj-weLuv391/resultimages/__:<br>
+>>Folder to hold images for our results.md
+
 >#### __finalProj-weLuv391/__:<br>
->>Our overall folder that not only holds all the previous folders, but also our ProjectProposal.md, TeamContract.md, results.md, and **presetationVideo.mp4**
+>>Our overall folder that not only holds all the previous folders, but also our ProjectProposal.md, TeamContract.md, and results.md.
 
 ### __Data File Format__:<br>
 >Location: *finalProj-weLuv391/data* <br>
@@ -56,8 +59,9 @@ This will ask for an input in the specific order of Node Type 1, Node Type 2, an
 
 In order to run main.cpp, __the user must first input desired data files in `/data`__ (if this is not done the program will not be able to find the files). Next, in the build folder run the command:
 
-    ./main
-This will ask the user to input their data files and create a nodes.txt and edges.txt placed in entry with all the valid nodes/edges to be used for the graph. It will then create a graph using all the nodes and edges found the created txt files. It will then prompt the user to input two points and the location of where the user wishes the output to be stored and it will return the path connecting the two nodes with the minimum weight at the given file output location.
+    ./main <intersection-filename> <road-filename> <airport-filename>
+
+This will create a nodes.txt and edges.txt in `src/` with all the valid nodes/edges and will load them into a graph. It will then prompt the user to input the start and destination as GPS coordinates (`latitude,longitude`). It will then find the fastest path, starting and ending at the nodes nearest to the inputted coordinates. The program outputs this path as the coordinates of the nodes along the way. You can use a GPS coordinate visualizer like [gpsvisualizer.com](https://www.gpsvisualizer.com/map_input?form=data) to visualize the path.
 
 ### __Running the test cases__:<br>
 >Location: *finalProj-weLuv391/tests/test.cpp* <br>
@@ -66,8 +70,12 @@ We have implemented a myriad of test cases that test the validity of every aspec
 
 ### __General Description of Test Cases__:<br>
 >Location: *finalProj-weLuv391/tests/test.cpp* <br>
+
+>#### Disclaimer:
+>All of the data needed to run these tests are already loaded in ,so simply running ./test will automatically run them.
+
 #### __sanitizer__: <br>
-This part of the code is what takes in our data set and cleans it up, removing all the extraneous or invalid data. It also creates all the edges between the airports and airports to the closest intersection. The first test case just measures if the program created an edge from every airport to an intersection using the kd-tree. The next two test cases are simple insertion cases of varying sizes that ensures that all of the relevant data are properly added from our files. However, the small test case only has Edge Data correction to remove any edges between non existant nodes, and the Medium Test Case has that and also the Node Data Correction of removing invalid airport nodes. The fourth test case focuses more on elimanting on invalid edges such as self loops and duplicate edges and removing any airports that don't fit our required parameters. The last test case focuses on a larger dataset, where we test to make sure that correct number of valid airports are included. We also test to make sure that there is indeed one flight connecting each pair of airports
+This part of the code is what takes in our data set and cleans it up, removing all the extraneous or invalid data. It also creates all the edges between the airports and airports to the closest intersection. The first test case just measures if the program created an edge from every airport to an intersection using the kd-tree. The next two test cases are simple insertion cases of varying sizes that ensures that all of the relevant data are properly added from our files. However, the small test case only has Edge Data correction to remove any edges between non existant nodes, and the Medium Test Case has that and also the Node Data Correction of removing invalid airport nodes. The fourth test case focuses more on elimanting on invalid edges such as self loops and duplicate edges and removing any airports that don't fit our required parameters. The last test case focuses on a larger dataset, where we test to make sure that correct number of valid airports are included. We also test to make sure that there is indeed one flight connecting each pair of airports. 
 #### __input_reader__: <br>
 Input_reader is a pretty simple algorithim that simply inserts all the nodes and edges from the file and that is what the two test cases do. The small test case just tests with a file of 3 nodes and a file with 1 edge and then checks if all were added. The 2nd test case is a massive one that uses all the nodes/edges created by our sanitize code and also just checks if all of them were properly added/detected by our code.
 
@@ -81,7 +89,7 @@ For this test, we used one example graph (connected, 5 nodes, 6 edges) with some
 This code should already be tested from mp_mazes. We added another basic test to ensure the methods work (add slots, union sets, find size of set, find key of set).
 
 #### __MST__: <br>
-We used the Kruskal example from Fa23 CS225 lecture. This shows that it works for an average graph. We also test it on an empty node and a single node graph. This ensures that it will generate an empty MST for those edge cases.
+We used the Kruskal example from Fa22 CS225 lecture. This shows that it works for an average graph. We also test it on an empty node and a single node graph. This ensures that it will generate an empty MST for those edge cases.
 
 #### __A-Star__: <br>
 We wrote two test cases for this algorithm. The first test created a very basic 5 node graph with edges of all equal distances and speed limits to verify the basic traversal ability of the algorithm. The second test created a slightly more difficult graph to navigate through with edges of different distances and speed limits. In this test case, there were multiple paths to get from node to node so the intelligence of the algorithm was tested, making sure that it took the shortest path while taking into account speed limits and distance.
