@@ -125,7 +125,8 @@ TEST_CASE("massive edges/test inserted", "[part=input_reader]") {
   fileList.push_back("../tests/nodes.txt");
   fileList.push_back("../tests/edges.txt");
   fullGraph testGraph = fullGraph(fileList, fullG_);
-
+  cout<< " Nodes Inserted: " << testGraph.getNodeCount() <<endl;
+  cout<< " Edges Inserted: " << testGraph.getEdgeCount()<< endl;
   REQUIRE( testGraph.getNodeCount() == 21076 ); // 21048 intersecions (counted) + 28 airports (counted) 
   REQUIRE( testGraph.getEdgeCount() ==  22099 ); // 21693 roads + nCr(28,2) airport flights + 28 airport to road connections
 }

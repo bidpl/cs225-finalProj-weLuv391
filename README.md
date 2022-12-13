@@ -1,6 +1,6 @@
 # cs225-finalProj-weLuv391
 Final Project for CS225 Fa22 group weLuv391
-
+Presentation Video: https://youtu.be/S5WsJeHn1_0
 
 ### __DISCLAIMER__:<br>
 >#### Location: *finalProj-weLuv391/lib/*
@@ -38,8 +38,11 @@ Assuming that a valid implementation of a Kd-tree and Disjoint Sets is present, 
 >#### __finalProj-weLuv391/test/__:<br>
 >>Folder location for all the test cases and all the txt files created by tests.cpp<br>
 
+>#### __finalProj-weLuv391/resultimages/__:<br>
+>>Folder to hold images for our results.md
+
 >#### __finalProj-weLuv391/__:<br>
->>Our overall folder that not only holds all the previous folders, but also our ProjectProposal.md, TeamContract.md, results.md, and **presetationVideo.mp4**
+>>Our overall folder that not only holds all the previous folders, but also our ProjectProposal.md, TeamContract.md, and results.md.
 
 ### __Data File Format__:<br>
 >Location: *finalProj-weLuv391/data* <br>

@@ -37,10 +37,18 @@ To test functionality for Data Cleaning, we implemented five test cases. The fir
 ## Input Reading:
 The next step in our assignment was to take all of the nodes and edges that were created by the Data Cleanup Algorithm and insert them into our graph. This part of the project was rather simple, it had one function called fullGraph which was a constructor for the fullGraph class. It took in a Graph reference and a vector of strings representing all the files a user may want to be inserted; however, the file order in the vector must go node, edge, node, edge, …. This was done so that if the user ever wished to have more than two types of travel types they could be easily inserted into the graph. For example, they could insert a plane, car, and train data type if they so wished to. The code first starts looping through the vector calling the helper function insertAllNodes and insertAllEdges which loops through the given file and inserts all the nodes and edges into the graph from the file. This is done by simply looping through the file one character at a time, and since we know what the data has been cleaned and what format should be, in that loop we can iterate through the line, converting each character either to an int or a double, and once we get all the info we insert it either as an edge or node and then we loop back until the file is empty. 
 
+>Output of Input Reading Test Case<br>
+![Input Reader Test Case](resultImages/inputRead.png)
+
 ### Testing:
 Since fileParser.cpp is a pretty simple algorithm that inserts all the nodes and edges from the file, there are only two test cases of varying sizes that checks if all of the nodes and edges contained in the file are properly added. The small test case just tests with a file of 3 nodes and a file with 1 edge and then checks if all were added. The 2nd test case is a massive one that uses all the nodes/edges created by our sanitized code and also just checks if all of them were properly added/detected by our code. Since they both pass, we know this aspect of the code works
 
 ## Graph Data Structure:
+To store our data as a graph, we had to implement a graph data structure. We chose to use an adjacency list implementation for two reasons. Firstly, we wanted quick access to a node’s neighbors for our pathfinding algorithm. Secondly, with such a large dataset, the O(n2) space complexity of adjacency matrices makes it infeasible to use. However, our implementation differed from the in class approach as we decided to use vector indexes instead of pointers as the data sanitize code returned our edges and nodes in order. 
+
+>Kruskal's, Graph, and BFS Output<br>
+![Kruskal's](resultImages/MST.png)
+
 
 ## Testing
 
@@ -48,10 +56,13 @@ We test our basic get/insert functions like getAdj, getEdge, insertEdge, insertN
 
 ## Algorithms:
 
+
 ## BFS
 
 Once we have set up our graph implementation, we needed to ensure that the graph could be correctly traversed. This means that a correctly implemented BFS Traversal should visit each node exactly once and the total number of nodes visited should equal the number of total nodes. Using this traversal, we can see that indeed our graph is correctly implemented if the number of traversed nodes is equal to the number of correct nodes in our cleaned dataset. This was not too difficult to implement as we have implemented traversals many times before. We simply had to create our own traversal class for the Graph that uses a queue of need to be visited and a vector of visited. Using these two data structures, our operator++ function can iterate through the graph in the proper fashion, adding nodes with each function call. 
 
+>All of the Nodes Visited Visualized<br>
+![All Nodes visited](resultImages/BFS.png)
 
 ### Testing 
 
@@ -60,8 +71,10 @@ For this test, we used one example graph (connected, 5 nodes, 6 edges) with some
 
 ## Kruskal's:
 
-We then wrote a Minimum Spanning Tree algorithm which could span the graph for our dataset. Between Prim’s and Kruskal’s algorithms, we ultimately settled on implementing Kruskal’s due to the fact that our later-mentioned A* algorithm shares many components to Prim’s, so we wanted some added variety. Here, Kruskal’s algorithm sorts the edges of the graph in increasing order of weight, and adds them to the minimum spanning tree starting from the lowest weights, while skipping over values which would lead to a cycle creation. Once all of the edges have been added, the algorithm terminates, returning the MST. Once again since this was an algorithm, it was not too difficult at all to be implemented, especially since we went with the sorted list method where we just altered our operator < function for edges in order to use std::sort on a vector of edges. We also had to implement the Disjoint Set code we used in mp_mazes in order to measure whether or not we have visited every node by creating a set of nodes everytime we connect them using an edge.
+We then wrote a Minimum Spanning Tree algorithm which could span the graph for our dataset. Between Prim’s and Kruskal’s algorithms, we ultimately settled on implementing Kruskal’s due to the fact that our later-mentioned A* algorithm shares many components to Prim’s, so we wanted some added variety. Here, Kruskal’s algorithm sorts the edges of the graph in increasing order of weight, and adds them to the minimum spanning tree starting from the lowest weights, while skipping over values which would lead to a cycle creation. Once all of the edges have been added, the algorithm terminates, returning the MST. Once again since this was  a simple algorithm that was not too difficult at all to be implemented. Especially since we went with the sorted list method where we just altered our operator< function for edges in order to use std::sort on a vector of edges. We also already implemented the Disjoint Set code we used in mp_mazes, so that made our lives easier.
 
+
+>Refer to the Image in Graph Data Structure for Kruskal's output<br>
 
 ### Testing:
 
@@ -70,6 +83,10 @@ We used the Kruskal example from Fa22 CS225 lecture. This shows that it works fo
 
 ## A-star:
 The A-star algorithm is a popular pathfinding algorithm that makes use of heuristics to look for the shortest path between nodes in a graph. The algorithm is defined in a*.cpp and under the function shortestPath. The function takes the graph to be used and starting and ending coordinates as parameters, and returns a vector of copied graph edges. To implement this function, a new data struct was defined in "a*.h" called Cell, a structure that contains a geographical location that's stored in a copied graph node, a pointer to its "parent" Cell which replicates a backwards linked list, and an F-score. How the A-star algorithm works and why it's unique from other traversals is that it intelligently looks for the next node in the shortest path by calculating the cost to move from the current node to the potential next node and summing that with the estimated cost of moving from the potential next node to the end with an approximation heuristic. For our approximation heuristic, we used the Euclidean distance between the potential next node and end node in miles divided by the average speed limit in America (55 mph) to get an estimate of the time it takes to get from that node to the end. The sum of this estimated cost and calculated cost is known as the F-score, and A-star always chooses the Cell with the smallest F-score to proceed. The algorithm also uses an open and closed list to know which Cells have already been processed and what Cells haven’t. Whenever the ending node is found, the path is generated by traversing through the backwards linked list in Cell->parent. Because the linked list stores the correct path in reverse order, we can simply flip the generated path of edges to get the path in correct order, which is what’s returned. Cells are each allocated on heap memory and when the ending node is found, they are deallocated. A-star is costly in regards to time as it runs in O(n^2) time, since for every node that is checked all its adjacent nodes are checked again to verify there aren’t better paths then the current one. 
+
+>A-Star Path visualized<br>
+![Kruskal's](resultImages/Astar.png)
+
 
 ### Testing:
 For testing, two test cases were written that covered a basic minimum spanning five node graph with two edge paths and a more complex six node graph with multiple paths between nodes and edges of different weights. I found it unnecessary to run A-star on edge cases of single node or empty graphs since it would be pointless to run A-star in those cases. The first test case ensured that A-star could do basic traversal and pathfinding as well as tested the KDtree implementation of being able to find the closest node to a generic pair of coordinates. The second test case tested the algorithm’s intelligence, testing that the algorithm would create the correct shortest path between nodes with multiple paths between them.
